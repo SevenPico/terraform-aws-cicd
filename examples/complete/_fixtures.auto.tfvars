@@ -1,0 +1,2 @@
+namespace = "eg"
+environment = "test"
