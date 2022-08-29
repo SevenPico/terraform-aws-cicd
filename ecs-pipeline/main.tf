@@ -3,10 +3,9 @@ module "pipeline" {
   version = "0.0.1"
   context = module.context.self
 
-  artifact_store_s3_bucket_id     = var.artifact_store_s3_bucket_id
-  artifact_store_kms_key_id       = var.artifact_store_kms_key_id
-  create_artifact_store_s3_bucket = var.create_artifact_store_s3_bucket
-  cloudwatch_log_expiration_days  = var.cloudwatch_log_expiration_days
+  artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
+  artifact_store_kms_key_id      = var.artifact_store_kms_key_id
+  cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
 
   iam_policy_statements = {
     ecr = {
@@ -54,7 +53,7 @@ module "pipeline" {
             ClusterName       = var.ecs_cluster_name
             ServiceName       = var.ecs_service_name
             DeploymentTimeout = var.ecs_deployment_timeout
-            #FileName          = var.image_detail_s3_object_key # FIXME - check this
+            FileName          = var.image_detail_s3_object_key
           }
         }
       }

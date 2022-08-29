@@ -20,7 +20,7 @@ module "ecr_event" {
   version = "0.0.1"
   context = module.context.self
 
-  for_each = toset(var.ecr_repository_names)
+  for_each = var.ecr_repository_url_map
   name     = each.key
 
   description   = "ECR Push Event to ${each.key} repository."
@@ -41,7 +41,9 @@ module "ecr_event" {
     {
       "type": "ecr",
       "action": "update",
-      "id": "${each.key}",
+      "repository_name": "${each.key}",
+      "repository_url": "${each.value}",
+      "uri": "${each.value}:<tag>",
       "tag": <tag>
     }
     EOF
@@ -82,7 +84,8 @@ module "s3_event" {
       "type": "s3",
       "action": "update",
       "bucket_id": <bucket_id>,
-      "key": <key>
+      "key": <key>,
+      "uri": "<bucket_id>/<key>"
     }
     EOF
     paths = {

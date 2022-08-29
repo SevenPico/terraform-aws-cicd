@@ -15,7 +15,46 @@ module "deployment_bucket" {
   version    = "3.0.0"
   context    = module.deployment_context.self
   attributes = ["bucket"]
-  # FIXME
+
+  acl                           = "private"
+  allow_encrypted_uploads_only  = false
+  allow_ssl_requests_only       = false
+  block_public_acls             = true
+  block_public_policy           = true
+  bucket_key_enabled            = false
+  bucket_name                   = null
+  cors_rule_inputs              = null
+  force_destroy                 = false
+  grants                        = []
+  ignore_public_acls            = true
+  kms_master_key_arn            = ""
+  lifecycle_configuration_rules = []
+  logging                       = {}
+  object_lock_configuration     = null
+  privileged_principal_actions  = []
+  privileged_principal_arns     = []
+  restrict_public_buckets       = true
+  s3_object_ownership           = "ObjectWriter"
+  s3_replica_bucket_arn         = ""
+  s3_replication_enabled        = false
+  s3_replication_rules          = null
+  s3_replication_source_roles   = []
+  source_policy_documents       = []
+  sse_algorithm                 = "AES256"
+  transfer_acceleration_enabled = false
+  user_enabled                  = false
+  versioning_enabled            = true
+  website_inputs                = null
+  allowed_bucket_actions = [
+    "s3:PutObject",
+    "s3:PutObjectAcl",
+    "s3:GetObject",
+    "s3:DeleteObject",
+    "s3:ListBucket",
+    "s3:ListBucketMultipartUploads",
+    "s3:GetBucketLocation",
+    "s3:AbortMultipartUpload"
+  ]
 }
 
 
@@ -63,7 +102,7 @@ module "deployment_lambda" {
   lambda_environment = {
     variables = {
       DEPLOYMENT_BUCKET_ID = module.deployment_bucket.bucket_id
-      TARGET_NAMES         = join(",", keys(var.ecs_targets))
+      TARGET_NAMES         = join(",", [for p in aws_ssm_parameter.ecs_source : p.name])
     }
   }
 }
@@ -71,8 +110,8 @@ module "deployment_lambda" {
 data "archive_file" "deployment_lambda" {
   count       = module.deployment_context.enabled ? 1 : 0
   type        = "zip"
-  source_dir  = "${path.module}/deployment_lambda"
-  output_path = "${path.module}/.build/deployment_lambda.zip"
+  source_dir  = "${path.module}/deployment-lambda"
+  output_path = "${path.module}/.build/deployment-lambda.zip"
 }
 
 
@@ -110,7 +149,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 module "deployment_lambda_policy" {
   source  = "cloudposse/iam-policy/aws"
   version = "0.4.0"
-  context = module.context.self
+  context = module.deployment_context.self
 
   description                   = "Deployment Lambda Access Policy"
   iam_override_policy_documents = null
@@ -124,22 +163,27 @@ module "deployment_lambda_policy" {
       effect = "Allow"
       actions = [
         "ssm:GetParameter*",
+        "ssm:GetParameters",
         "ssm:DescribeParameter*",
       ]
       resources = concat(
-        aws_ssm_parameter.ecs_source[*].arn,
-        # aws_ssm_parameter.s3_source[*].arn,
+        [for p in aws_ssm_parameter.ecs_source : p.arn],
       )
     }
     S3PutArtifact = {
-      effect    = "Allow"
-      actions   = ["s3:Put*"]
-      resources = [module.deployment_bucket.bucket_id]
+      effect  = "Allow"
+      actions = ["s3:PutObject"]
+      resources = [
+        "*", # FIXME
+        module.deployment_bucket.bucket_arn,
+        "${module.deployment_bucket.bucket_arn}/ecs/*",
+        "${module.deployment_bucket.bucket_arn}/s3/*",
+      ]
     }
-    S3GetArtifact = {
-      effect    = "Allow"
-      actions   = ["s3:Get*"]
-      resources = [var.artifact_bucket_id]
-    }
+    # S3GetArtifact = {
+    #   effect    = "Allow"
+    #   actions   = ["s3:Get*"]
+    #   resources = [var.artifact_bucket_id]
+    # }
   }
 }

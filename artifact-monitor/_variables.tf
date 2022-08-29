@@ -1,6 +1,6 @@
-variable "ecr_repository_names" {
-  type    = list(string)
-  default = []
+variable "ecr_repository_url_map" {
+  type    = map(string)
+  default = {}
 }
 
 variable "s3_bucket_ids" {

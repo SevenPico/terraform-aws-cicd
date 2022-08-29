@@ -1,8 +1,8 @@
 
-IMAGE    = nginx:latest
-REGISTRY = 249974707517.dkr.ecr.us-east-1.amazonaws.com
-REPO    ?= foo
-TAG     ?= test
+IMAGE    ?= alpine:latest
+REGISTRY  = 249974707517.dkr.ecr.us-east-1.amazonaws.com
+REPO     ?= foo
+TAG      ?= latest
 
 BUCKET = eg-test-artifacts
 PREFIX = sites/

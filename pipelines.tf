@@ -14,13 +14,13 @@ module "ecs_pipeline" {
   ecs_service_name               = each.value.ecs_service_name
   ecs_deployment_timeout         = var.ecs_deployment_timeout
   image_detail_s3_bucket_id      = module.deployment_bucket.bucket_id
-  image_detail_s3_object_key     = "ecs-${each.key}.json"
+  image_detail_s3_object_key     = "${aws_ssm_parameter.ecs_source[each.key].name}.json"
 }
 
 resource "aws_ssm_parameter" "ecs_source" {
-  for_each = var.ecs_targets
+  for_each = module.context.enabled ? var.ecs_targets : {}
 
-  name = "ecs-${each.key}"
+  name = "/ecs/${each.key}"
   type = "String"
 
   allowed_pattern = null # TODO

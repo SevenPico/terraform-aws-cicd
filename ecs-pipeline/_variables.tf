@@ -29,11 +29,6 @@ variable "artifact_store_kms_key_id" {
   default = ""
 }
 
-variable "create_artifact_store_s3_bucket" {
-  type    = bool
-  default = true
-}
-
 variable "cloudwatch_log_expiration_days" {
   type    = string
   default = 90
