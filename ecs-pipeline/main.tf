@@ -1,5 +1,6 @@
 module "pipeline" {
-  source  = "../codepipeline"
+  source  = "app.terraform.io/SevenPico/codepipeline/aws"
+  version = "0.0.1"
   context = module.context.self
 
   artifact_store_s3_bucket_id     = var.artifact_store_s3_bucket_id
@@ -53,7 +54,7 @@ module "pipeline" {
             ClusterName       = var.ecs_cluster_name
             ServiceName       = var.ecs_service_name
             DeploymentTimeout = var.ecs_deployment_timeout
-            //FileName          = var.image_detail_s3_object_key # FIXME - check this
+            #FileName          = var.image_detail_s3_object_key # FIXME - check this
           }
         }
       }

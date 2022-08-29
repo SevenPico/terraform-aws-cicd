@@ -1,12 +1,34 @@
 // service a
 // service b
-
 // site a
 // site b
-
 // lambda
-
 // api
+
+# deployment
+
+
+
+# module "cicd" {
+#   artifact_monitor_sns_topic_arns = [module.artifact_monitor.sns_topic_arn]
+
+#   targets = {
+#     foo-service = {
+#       type             = "ecs"
+#       image_uri        = "249974707517.dkr.ecr.us-east-1.amazonaws.com/foo:latest"
+#       ecs_cluster_name = ""
+#       ecs_service_name = ""
+#     }
+#     bar-site = {
+#       type             = "s3-website"
+#       origin_bucket_id = module.order_site.s3_bucket
+#       s3_path          = "${var.artifacts_bucket_id}/sites/bar/bar-latest.zip"
+#     }
+#   }
+# }
+
+
+
 /*
 module "ecs_service_cicd" {
   source  = "../"
@@ -35,65 +57,6 @@ module "artifacts_bucket" {
   read_principals = [module.ecs_service_cicd.role_arn]
   rorce_destroy   = true
 }
-module "cicd" {
-  artifact_monitor_sns_topic_arns = [module.artifact_monitor.sns_topic_arn]
-
-  targets = {
-    content-service = {
-      type    = "ecs"
-      source_path =
-      key_format = "$source_path-$version"
-
-      arn     = module.content_service.arn
-      version = "latest"
-    }
-    fulfillment-service = {
-      type    = "ecs"
-      version = "1.2.3"
-    }
-    order-site = {
-      type    = "s3-website"
-      source  = "s3://cmbg-artifacts/order-site"
-      uri     = "s3://${module.order_site.s3_bucket}"
-      version = "latest"
-    }
-    payment-site = {
-      type       = "s3-website"
-      source     = "s3://cmbg-artifacts/payment-site"
-      version    = "1.2.3"
-      key_format = "$${name}-$${version}.zip"
-    }
-    vpn-api-lambda = {
-      type    = "lambda"
-      source  = "s3://cmbg-artifacts/payment-site"
-      version = "1.2.3"
-    }
-  }
 
 
-
-  pre_deploy_environment_variables = [
-    {
-      name  = "S3_TARGET_BUCKET",
-      value = var.s3_site_origin_bucket
-      type  = "PLAINTEXT",
-    },
-    {
-      name  = "AWS_REGION",
-      value = data.aws_region.current[0].name,
-      type  = "PLAINTEXT",
-    },
-    {
-      name  = "AWS_SECRETS_REGION",
-      value = data.aws_region.current[0].name,
-      type  = "PLAINTEXT",
-    },
-    {
-      name  = "S3_SECRETS_BUCKET"
-      value = "s3://${var.config_bucket_name}"
-      type  = "PLAINTEXT",
-    },
-  ]
-
-}
 */

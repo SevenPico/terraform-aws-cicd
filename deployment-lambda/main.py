@@ -51,8 +51,8 @@ def trigger_ecs_pipeline(target_name, image_uri):
     image_detail = [{ 'name': target_name, 'imageUri': image_uri }]
 
     s3.put_object(
-        Bucket = config.artifact_bucket_id,
-        Key    = f'{target_name}.json',
+        Bucket = config.deployment_bucket_id,
+        Key    = f'ecs-{target_name}.json',
         Body   = json.dumps(image_detail),
     )
 
@@ -62,7 +62,7 @@ def trigger_s3_pipeline(target_name, object_uri):
 
     s3 = session.client('s3')
     s3.copy_object(
-        Bucket     = config.artifact_bucket_id,
-        Key        = f'{target_name}{suffix}',
+        Bucket     = config.deployment_bucket_id,
+        Key        = f's3-{target_name}{suffix}',
         CopySource = object_uri,
     )

@@ -2,7 +2,8 @@
 # Artifact Update SNS Topic
 # ------------------------------------------------------------------------------
 module "sns_topic" {
-  source  = "../../terraform-aws-sns"
+  source  = "app.terraform.io/SevenPico/sns/aws"
+  version = "0.0.1"
   context = module.context.self
 
   kms_master_key_id = ""
@@ -15,7 +16,8 @@ module "sns_topic" {
 # ECR Image Push Event Rule
 # ------------------------------------------------------------------------------
 module "ecr_event" {
-  source  = "../../terraform-aws-sns/cloudwatch-event"
+  source  = "app.terraform.io/SevenPico/sns/aws//cloudwatch-event"
+  version = "0.0.1"
   context = module.context.self
 
   for_each = toset(var.ecr_repository_names)
@@ -54,7 +56,8 @@ module "ecr_event" {
 # S3 Object Update Event Rule
 # ------------------------------------------------------------------------------
 module "s3_event" {
-  source  = "../../terraform-aws-sns/cloudwatch-event"
+  source  = "app.terraform.io/SevenPico/sns/aws//cloudwatch-event"
+  version = "0.0.1"
   context = module.context.self
 
   for_each = toset(var.s3_bucket_ids)

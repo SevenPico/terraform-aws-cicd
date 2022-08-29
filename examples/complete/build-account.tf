@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 module "artifacts_bucket" {
-  source     = "registry.terraform.io/cloudposse/s3-bucket/aws"
-  version    = "2.0.3"
+  source     = "app.terraform.io/SevenPico/s3-bucket/aws"
+  version    = "3.0.0"
   context    = module.context.self
   attributes = ["artifacts"]
 }
@@ -34,29 +34,29 @@ module "ecr" {
 # Artifact Monitor
 # ------------------------------------------------------------------------------
 module "artifact_monitor" {
-  source  = "../artifact-monitor"
+  source  = "../../artifact-monitor"
   context = module.context.self
 
   ecr_repository_names = keys(module.ecr.repository_url_map)
 
   s3_bucket_ids = [module.artifacts_bucket.bucket_id]
-    # oof-site = {
-    #   bucket_id = module.artifacts_bucket.bucket_id
-    #   prefix    = "sites/oof/"
-    # }
-    # rab-site = {
-    #   bucket_id = module.artifacts_bucket.bucket_id
-    #   prefix    = "sites/rab/"
-    # }
-    # baz-lambda = {
-    #   bucket_id = module.artifacts_bucket.bucket_id
-    #   prefix    = "lambdas/baz/"
-    # }
-    # zab-api = {
-    #   bucket_id = module.artifacts_bucket.bucket_id
-    #   prefix    = "apis/zab"
-    # }
-    #}
+  # oof-site = {
+  #   bucket_id = module.artifacts_bucket.bucket_id
+  #   prefix    = "sites/oof/"
+  # }
+  # rab-site = {
+  #   bucket_id = module.artifacts_bucket.bucket_id
+  #   prefix    = "sites/rab/"
+  # }
+  # baz-lambda = {
+  #   bucket_id = module.artifacts_bucket.bucket_id
+  #   prefix    = "lambdas/baz/"
+  # }
+  # zab-api = {
+  #   bucket_id = module.artifacts_bucket.bucket_id
+  #   prefix    = "apis/zab"
+  # }
+  #}
 }
 
 resource "aws_sns_topic_subscription" "test" {
