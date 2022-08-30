@@ -11,14 +11,14 @@ module "artifact_bucket" {
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 module "ecr" {
-  source = "registry.terraform.io/cloudposse/ecr/aws"
+  source  = "registry.terraform.io/cloudposse/ecr/aws"
   version = "0.34.0"
   context = module.context.self
   name    = "ecr"
 
   enable_lifecycle_policy    = true
   encryption_configuration   = null
-  image_names                = ["foo"]
+  image_names                = ["foo", "bar"]
   image_tag_mutability       = "MUTABLE"
   max_image_count            = 1000
   principals_full_access     = []

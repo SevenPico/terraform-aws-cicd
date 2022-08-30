@@ -1,5 +1,5 @@
 
-IMAGE    ?= alpine:latest
+IMAGE    ?= nginx:latest
 REGISTRY  = 249974707517.dkr.ecr.us-east-1.amazonaws.com
 REPO     ?= foo
 TAG      ?= latest
@@ -12,6 +12,7 @@ ecr-login:
 	`aws ecr get-login --no-include-email --region us-east-1`
 
 ecr-tag: ecr-login
+	docker pull $(IMAGE)
 	docker tag $(IMAGE) $(REGISTRY)/$(REPO):$(TAG)
 
 ecr-push: ecr-tag

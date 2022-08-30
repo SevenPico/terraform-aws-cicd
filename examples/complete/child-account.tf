@@ -11,10 +11,15 @@ module "cicd" {
   ecs_deployment_timeout         = 15
 
   ecs_targets = {
-    foo-service = {
-      image_uri        = "${module.ecr.repository_url_map["foo"]}:latest"
+    foo = {
+      image_uri          = "${module.ecr.repository_url_map["foo"]}:latest"
+      ecs_cluster_name   = aws_ecs_cluster.this.name
+      ecs_service_name   = module.foo_service.service_name
+    }
+    bar = {
+      image_uri        = "${module.ecr.repository_url_map["bar"]}:latest"
       ecs_cluster_name = aws_ecs_cluster.this.name
-      ecs_service_name = module.service.service_name
+      ecs_service_name = module.bar_service.service_name
     }
   }
 }

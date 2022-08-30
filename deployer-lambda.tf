@@ -1,20 +1,20 @@
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-module "deployment_context" {
+module "deployer_context" {
   source     = "app.terraform.io/SevenPico/context/null"
   version    = "1.0.1"
   context    = module.context.self
-  attributes = ["deployment"]
+  attributes = ["deployer"]
 }
 
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-module "deployment_bucket" {
+module "deployer_artifacts_bucket" {
   source     = "app.terraform.io/SevenPico/s3-bucket/aws"
   version    = "3.0.0"
-  context    = module.deployment_context.self
-  attributes = ["bucket"]
+  context    = module.deployer_context.self
+  attributes = ["artifacts"]
 
   acl                           = "private"
   allow_encrypted_uploads_only  = false
@@ -60,10 +60,10 @@ module "deployment_bucket" {
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-module "deployment_lambda" {
+module "deployer_lambda" {
   source     = "app.terraform.io/SevenPico/lambda-function/aws"
   version    = "0.1.0.2"
-  context    = module.deployment_context.self
+  context    = module.deployer_context.self
   attributes = ["lambda"]
 
   architectures                       = null
@@ -74,8 +74,8 @@ module "deployment_lambda" {
   cloudwatch_log_subscription_filters = {}
   description                         = "Trigger Deployment Pipelines on Artifact Update Notification."
   event_source_mappings               = {}
-  filename                            = data.archive_file.deployment_lambda[0].output_path
-  function_name                       = module.deployment_context.id
+  filename                            = data.archive_file.deployer_lambda[0].output_path
+  function_name                       = module.deployer_context.id
   handler                             = "main.lambda_handler"
   ignore_external_function_updates    = false
   image_config                        = {}
@@ -87,13 +87,13 @@ module "deployment_lambda" {
   package_type                        = "Zip"
   publish                             = false
   reserved_concurrent_executions      = -1
-  role_name                           = "${module.deployment_context.id}-role"
+  role_name                           = "${module.deployer_context.id}-role"
   runtime                             = "python3.9"
   s3_bucket                           = null
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.deployment_lambda[0].output_sha
+  source_code_hash                    = data.archive_file.deployer_lambda[0].output_sha
   ssm_parameter_names                 = null
   timeout                             = 3
   tracing_config_mode                 = null
@@ -101,36 +101,36 @@ module "deployment_lambda" {
 
   lambda_environment = {
     variables = {
-      DEPLOYMENT_BUCKET_ID = module.deployment_bucket.bucket_id
-      TARGET_NAMES         = join(",", [for p in aws_ssm_parameter.ecs_source : p.name])
+      DEPLOYER_ARTIFACTS_BUCKET_ID = module.deployer_artifacts_bucket.bucket_id
+      TARGET_NAMES                 = join(",", keys(local.targets))
     }
   }
 }
 
-data "archive_file" "deployment_lambda" {
-  count       = module.deployment_context.enabled ? 1 : 0
+data "archive_file" "deployer_lambda" {
+  count       = module.deployer_context.enabled ? 1 : 0
   type        = "zip"
-  source_dir  = "${path.module}/deployment-lambda"
-  output_path = "${path.module}/.build/deployment-lambda.zip"
+  source_dir  = "${path.module}/deployer-lambda"
+  output_path = "${path.module}/.build/deployer-lambda.zip"
 }
 
 
 # ------------------------------------------------------------------------------
 # Lambda SNS Subscription
 # ------------------------------------------------------------------------------
-resource "aws_sns_topic_subscription" "deployment_lambda" {
-  count = module.deployment_context.enabled ? 1 : 0
+resource "aws_sns_topic_subscription" "deployer_lambda" {
+  count = module.deployer_context.enabled ? 1 : 0
 
-  endpoint  = module.deployment_lambda.arn
+  endpoint  = module.deployer_lambda.arn
   protocol  = "lambda"
   topic_arn = var.artifact_sns_topic_arn
 }
 
 resource "aws_lambda_permission" "artifact_sns" {
-  count = module.deployment_context.enabled ? 1 : 0
+  count = module.deployer_context.enabled ? 1 : 0
 
   action        = "lambda:InvokeFunction"
-  function_name = module.deployment_lambda.function_name
+  function_name = module.deployer_lambda.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = var.artifact_sns_topic_arn
   statement_id  = "AllowExecutionFromSNS"
@@ -141,17 +141,17 @@ resource "aws_lambda_permission" "artifact_sns" {
 # Lambda IAM
 # ------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "lambda" {
-  count      = module.deployment_context.enabled ? 1 : 0
-  role       = "${module.deployment_context.id}-role"
-  policy_arn = module.deployment_lambda_policy.policy_arn
+  count      = module.deployer_context.enabled ? 1 : 0
+  role       = "${module.deployer_context.id}-role"
+  policy_arn = module.deployer_lambda_policy.policy_arn
 }
 
-module "deployment_lambda_policy" {
+module "deployer_lambda_policy" {
   source  = "cloudposse/iam-policy/aws"
   version = "0.4.0"
-  context = module.deployment_context.self
+  context = module.deployer_context.self
 
-  description                   = "Deployment Lambda Access Policy"
+  description                   = "deployer Lambda Access Policy"
   iam_override_policy_documents = null
   iam_policy_enabled            = true
   iam_policy_id                 = null
@@ -167,7 +167,7 @@ module "deployment_lambda_policy" {
         "ssm:DescribeParameter*",
       ]
       resources = concat(
-        [for p in aws_ssm_parameter.ecs_source : p.arn],
+        [for p in aws_ssm_parameter.target_source : p.arn],
       )
     }
     S3PutArtifact = {
@@ -175,9 +175,9 @@ module "deployment_lambda_policy" {
       actions = ["s3:PutObject"]
       resources = [
         "*", # FIXME
-        module.deployment_bucket.bucket_arn,
-        "${module.deployment_bucket.bucket_arn}/ecs/*",
-        "${module.deployment_bucket.bucket_arn}/s3/*",
+        module.deployer_artifacts_bucket.bucket_arn,
+        "${module.deployer_artifacts_bucket.bucket_arn}/ecs/*",
+        "${module.deployer_artifacts_bucket.bucket_arn}/s3/*",
       ]
     }
     # S3GetArtifact = {

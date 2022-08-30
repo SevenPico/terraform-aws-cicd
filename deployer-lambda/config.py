@@ -18,5 +18,5 @@ def get_required_var(name):
 
 @dataclass
 class Config:
-    deployment_bucket_id = get_required_var('DEPLOYMENT_BUCKET_ID')
+    deployer_artifacts_bucket_id = get_required_var('DEPLOYER_ARTIFACTS_BUCKET_ID')
     target_names = get_required_var('TARGET_NAMES').split(',')

@@ -53,7 +53,7 @@ module "pipeline" {
             ClusterName       = var.ecs_cluster_name
             ServiceName       = var.ecs_service_name
             DeploymentTimeout = var.ecs_deployment_timeout
-            FileName          = var.image_detail_s3_object_key
+            FileName          = "imagedefinitions.json"
           }
         }
       }

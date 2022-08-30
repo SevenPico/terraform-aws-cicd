@@ -24,14 +24,32 @@ resource "aws_ecs_cluster" "this" {
   tags = module.context.tags
 }
 
-module "service" {
+module "foo_container_definition" {
+  source  = "cloudposse/ecs-container-definition/aws"
+  version = "0.58.1"
+
+  container_cpu                = 256
+  essential                    = true
+  container_image              = "nginxdemos/hello:latest"
+  container_memory             = 256
+  container_memory_reservation = 128
+  container_name               = "foo"
+  readonly_root_filesystem     = false
+  environment                  = []
+  port_mappings = [{
+    containerPort = 80
+    hostPort      = 80
+    protocol      = "tcp"
+  }]
+}
+
+module "foo_service" {
   source  = "cloudposse/ecs-alb-service-task/aws"
   version = "0.66.1"
-  context = module.context.self
-  name    = "service"
+  name    = "foo-service"
 
   alb_security_group                 = module.vpc.vpc_default_security_group_id
-  container_definition_json          = module.container_definition.json_map_encoded_list
+  container_definition_json          = module.foo_container_definition.json_map_encoded_list
   ecs_cluster_arn                    = aws_ecs_cluster.this.arn
   launch_type                        = "FARGATE"
   vpc_id                             = module.vpc.vpc_id
@@ -50,7 +68,8 @@ module "service" {
   ecs_service_enabled                = true
 }
 
-module "container_definition" {
+
+module "bar_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
   version = "0.58.1"
 
@@ -59,7 +78,7 @@ module "container_definition" {
   container_image              = "nginxdemos/hello:latest"
   container_memory             = 256
   container_memory_reservation = 128
-  container_name               = module.context.id
+  container_name               = "bar"
   readonly_root_filesystem     = false
   environment                  = []
   port_mappings = [{
@@ -67,4 +86,30 @@ module "container_definition" {
     hostPort      = 80
     protocol      = "tcp"
   }]
+}
+
+
+module "bar_service" {
+  source  = "cloudposse/ecs-alb-service-task/aws"
+  version = "0.66.1"
+  name    = "bar-service"
+
+  alb_security_group                 = module.vpc.vpc_default_security_group_id
+  container_definition_json          = module.bar_container_definition.json_map_encoded_list
+  ecs_cluster_arn                    = aws_ecs_cluster.this.arn
+  launch_type                        = "FARGATE"
+  vpc_id                             = module.vpc.vpc_id
+  security_group_ids                 = [module.vpc.vpc_default_security_group_id]
+  subnet_ids                         = module.subnets.public_subnet_ids
+  ignore_changes_task_definition     = true
+  network_mode                       = "awsvpc"
+  assign_public_ip                   = true
+  propagate_tags                     = "TASK_DEFINITION"
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+  deployment_controller_type         = "ECS"
+  desired_count                      = 1
+  task_cpu                           = 256
+  task_memory                        = 512
+  ecs_service_enabled                = true
 }
