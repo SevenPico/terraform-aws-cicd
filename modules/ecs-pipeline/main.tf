@@ -6,16 +6,7 @@ module "pipeline" {
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
   artifact_store_kms_key_id      = var.artifact_store_kms_key_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-
-  iam_policy_statements = {
-    ecr = {
-      effect = "Allow"
-      actions = [
-        "ecr:*", # FIXME
-      ]
-      resources = ["*"]
-    }
-  }
+  iam_policy_statements = {}
 
   stages = [
     {

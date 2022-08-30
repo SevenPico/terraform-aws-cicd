@@ -6,10 +6,13 @@ variable "ecs_targets" {
   }))
 }
 
-# variable "s3_targets" {
-#   type = map(object({
-#   }))
-# }
+variable "s3_targets" {
+  type = map(object({
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    target_s3_bucket_id  = string
+  }))
+}
 
 variable "cloudwatch_log_expiration_days" {
   type    = string

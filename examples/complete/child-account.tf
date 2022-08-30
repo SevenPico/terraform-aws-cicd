@@ -10,14 +10,27 @@ module "cicd" {
 
   ecs_targets = {
     foo = {
-      image_uri          = "${module.ecr.repository_url_map["foo"]}:latest"
-      ecs_cluster_name   = aws_ecs_cluster.this.name
-      ecs_service_name   = module.foo_service.service_name
+      image_uri        = "${module.ecr.repository_url_map["foo"]}:latest"
+      ecs_cluster_name = aws_ecs_cluster.this.name
+      ecs_service_name = module.foo_service.service_name
     }
     bar = {
       image_uri        = "${module.ecr.repository_url_map["bar"]}:latest"
       ecs_cluster_name = aws_ecs_cluster.this.name
       ecs_service_name = module.bar_service.service_name
+    }
+  }
+
+  s3_targets = {
+    foo = {
+      source_s3_bucket_id  = module.artifact_bucket.bucket_id
+      source_s3_object_key = "sites/foo/foo-latest.zip"
+      target_s3_bucket_id  = module.site_bucket["foo"].bucket_id
+    }
+    bar = {
+      source_s3_bucket_id  = module.artifact_bucket.bucket_id
+      source_s3_object_key = "sites/bar/bar-latest.zip"
+      target_s3_bucket_id  = module.site_bucket["bar"].bucket_id
     }
   }
 }

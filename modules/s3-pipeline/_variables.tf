@@ -1,32 +1,26 @@
-variable "ecs_cluster_name" {
+variable "target_s3_bucket_id" {
   type = string
 }
 
-variable "ecs_service_name" {
+variable "source_s3_bucket_id" {
   type = string
 }
 
-variable "ecs_deployment_timeout" {
-  type    = number
-  default = 15
-}
-
-variable "image_detail_s3_bucket_id" {
-  type = string
-}
-
-variable "image_detail_s3_object_key" {
+variable "source_s3_object_key" {
   type = string
 }
 
 variable "artifact_store_s3_bucket_id" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "artifact_store_kms_key_id" {
-  type    = string
-  default = ""
+  type = string
+}
+
+variable "pre_deploy_enabled" {
+  type    = bool
+  default = false
 }
 
 variable "cloudwatch_log_expiration_days" {

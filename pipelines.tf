@@ -4,7 +4,7 @@
 locals {
   targets = merge(
     { for k, v in var.ecs_targets : "ecs/${k}" => v.image_uri },
-    # FIXME
+    { for k, v in var.s3_targets : "s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
   )
 }
 
@@ -17,7 +17,7 @@ module "ecs_pipeline" {
   context = module.context.self
 
   for_each   = var.ecs_targets
-  attributes = [each.key]
+  attributes = ["ecs", each.key]
 
   artifact_store_kms_key_id      = ""
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
@@ -33,6 +33,21 @@ module "ecs_pipeline" {
 # ------------------------------------------------------------------------------
 # S3 Target Pipelines
 # ------------------------------------------------------------------------------
+module "s3_pipeline" {
+  source  = "./modules/s3-pipeline"
+  context = module.context.self
+
+  for_each   = var.s3_targets
+  attributes = ["s3", each.key]
+
+  artifact_store_kms_key_id      = ""
+  artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
+  cloudwatch_log_expiration_days = 90
+  pre_deploy_enabled             = false
+  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
+  source_s3_object_key           = "s3/${each.key}.zip"
+  target_s3_bucket_id            = each.value.target_s3_bucket_id
+}
 
 
 # ------------------------------------------------------------------------------

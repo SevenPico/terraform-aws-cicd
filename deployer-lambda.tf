@@ -191,10 +191,10 @@ module "deployer_lambda_policy" {
         "${module.deployer_artifacts_bucket.bucket_arn}/*",
       ]
     }
-    # S3GetArtifact = {
-    #   effect    = "Allow"
-    #   actions   = ["s3:Get*"]
-    #   resources = [var.artifact_bucket_id]
-    # }
+    S3GetArtifact = {
+      effect    = "Allow"
+      actions   = ["s3:Get*"]
+      resources = ["*"] # FIXME s3_targets.target_s3_bucket_id
+    }
   }
 }
