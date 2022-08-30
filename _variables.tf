@@ -34,11 +34,6 @@ variable "ecs_deployment_timeout" {
   default = 15
 }
 
-variable "artifact_bucket_id" {
-  type    = string
-  default = ""
-}
-
 variable "artifact_sns_topic_arn" {
   type    = string
   default = ""
