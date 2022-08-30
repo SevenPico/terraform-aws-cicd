@@ -26,7 +26,7 @@ module "ecr" {
 }
 
 module "artifact_monitor" {
-  source  = "../../artifact-monitor"
+  source  = "../../modules/artifact-monitor"
   context = module.context.self
 
   ecr_repository_url_map = module.ecr.repository_url_map

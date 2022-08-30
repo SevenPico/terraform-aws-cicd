@@ -4,6 +4,7 @@
 locals {
   targets = merge(
     { for k, v in var.ecs_targets : "ecs/${k}" => v.image_uri },
+    # FIXME
   )
 }
 
@@ -12,7 +13,7 @@ locals {
 # ECS Target Pipelines
 # ------------------------------------------------------------------------------
 module "ecs_pipeline" {
-  source  = "./ecs-pipeline"
+  source  = "./modules/ecs-pipeline"
   context = module.context.self
 
   for_each   = var.ecs_targets
@@ -28,6 +29,10 @@ module "ecs_pipeline" {
   image_detail_s3_object_key     = "ecs/${each.key}.zip"
 }
 
+
+# ------------------------------------------------------------------------------
+# S3 Target Pipelines
+# ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------

@@ -32,6 +32,6 @@ variable "artifact_sns_topic_arn" {
 }
 
 variable "ignore_target_source_changes" {
-  type = bool
-  default = true
+  type    = bool
+  default = false
 }

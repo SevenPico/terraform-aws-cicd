@@ -113,7 +113,7 @@ module "deployer_lambda" {
 data "archive_file" "deployer_lambda" {
   count       = module.deployer_context.enabled ? 1 : 0
   type        = "zip"
-  source_dir  = "${path.module}/deployer-lambda"
+  source_dir  = "${path.module}/lambdas/deployer"
   output_path = "${path.module}/.build/deployer-lambda.zip"
 }
 
@@ -187,10 +187,8 @@ module "deployer_lambda_policy" {
       effect  = "Allow"
       actions = ["s3:PutObject"]
       resources = [
-        "*", # FIXME
         module.deployer_artifacts_bucket.bucket_arn,
-        "${module.deployer_artifacts_bucket.bucket_arn}/ecs/*",
-        "${module.deployer_artifacts_bucket.bucket_arn}/s3/*",
+        "${module.deployer_artifacts_bucket.bucket_arn}/*",
       ]
     }
     # S3GetArtifact = {
