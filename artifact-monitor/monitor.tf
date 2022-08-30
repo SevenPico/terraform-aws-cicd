@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "sns_topic" {
   source  = "app.terraform.io/SevenPico/sns/aws"
-  version = "0.0.1"
+  version = "1.0.0"
   context = module.context.self
 
   kms_master_key_id = ""
@@ -16,15 +16,15 @@ module "sns_topic" {
 # ECR Image Push Event Rule
 # ------------------------------------------------------------------------------
 module "ecr_event" {
-  source  = "app.terraform.io/SevenPico/sns/aws//cloudwatch-event"
+  source  = "app.terraform.io/SevenPico/events/aws//cloudwatch-event"
   version = "0.0.1"
   context = module.context.self
 
   for_each = var.ecr_repository_url_map
   name     = each.key
 
-  description   = "ECR Push Event to ${each.key} repository."
-  sns_topic_arn = module.sns_topic.topic_arn
+  description = "ECR Push Event to ${each.key} repository."
+  target_arn  = module.sns_topic.topic_arn
 
   event_pattern = jsonencode({
     source      = ["aws.ecr"]
@@ -58,15 +58,15 @@ module "ecr_event" {
 # S3 Object Update Event Rule
 # ------------------------------------------------------------------------------
 module "s3_event" {
-  source  = "app.terraform.io/SevenPico/sns/aws//cloudwatch-event"
+  source  = "app.terraform.io/SevenPico/events/aws//cloudwatch-event"
   version = "0.0.1"
   context = module.context.self
 
   for_each = toset(var.s3_bucket_ids)
   name     = each.key
 
-  description   = "S3 Object Created in s3://${each.key}"
-  sns_topic_arn = module.sns_topic.topic_arn
+  description = "S3 Object Created in s3://${each.key}"
+  target_arn         = module.sns_topic.topic_arn
 
   event_pattern = jsonencode({
     source      = ["aws.s3"]

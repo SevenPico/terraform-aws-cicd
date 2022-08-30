@@ -1,4 +1,5 @@
 # ------------------------------------------------------------------------------
+# Deployment Targets Map Merge
 # ------------------------------------------------------------------------------
 locals {
   targets = merge(
@@ -8,6 +9,7 @@ locals {
 
 
 # ------------------------------------------------------------------------------
+# ECS Target Pipelines
 # ------------------------------------------------------------------------------
 module "ecs_pipeline" {
   source  = "./ecs-pipeline"
@@ -26,6 +28,11 @@ module "ecs_pipeline" {
   image_detail_s3_object_key     = "ecs/${each.key}.zip"
 }
 
+
+
+# ------------------------------------------------------------------------------
+# SSM Parameter for Target Sources
+# ------------------------------------------------------------------------------
 resource "aws_ssm_parameter" "target_source" {
   for_each = module.context.enabled ? local.targets : {}
 
@@ -35,9 +42,49 @@ resource "aws_ssm_parameter" "target_source" {
   insecure_value  = each.value
   key_id          = null
   name            = "/${each.key}"
-  overwrite       = true
+  overwrite       = !var.ignore_target_source_changes
   tags            = module.context.tags
   tier            = "Standard"
   type            = "String"
   value           = null
+}
+
+
+# ------------------------------------------------------------------------------
+# Lambda Event Trigger on Target Source Change
+# ------------------------------------------------------------------------------
+module "ssm_target_source_update_event" {
+  source     = "app.terraform.io/SevenPico/events/aws//cloudwatch-event"
+  version    = "0.0.2"
+  context    = module.context.self
+  attributes = ["target-source-update"]
+
+  description = "SSM Target Source Update Event"
+  target_arn  = module.deployer_lambda.arn
+
+  event_pattern = jsonencode({
+    source      = ["aws.ssm"]
+    detail-type = ["Parameter Store Change"]
+    detail = {
+      name = [for p in aws_ssm_parameter.target_source : p.name],
+      operation = [
+        "Update",
+        "Create",
+        "LabelParameterVersion",
+      ]
+    }
+  })
+
+  transformer = {
+    template = <<EOF
+    {
+      "type": "ssm",
+      "action": "update",
+      "parameter_name": "<parameter_name>"
+    }
+    EOF
+    paths = {
+      parameter_name = "$.detail.name"
+    }
+  }
 }

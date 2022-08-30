@@ -1,4 +1,5 @@
 # ------------------------------------------------------------------------------
+# Deployer Lambda Context
 # ------------------------------------------------------------------------------
 module "deployer_context" {
   source     = "app.terraform.io/SevenPico/context/null"
@@ -9,6 +10,7 @@ module "deployer_context" {
 
 
 # ------------------------------------------------------------------------------
+# Artifact Bucket for use by Deployer Lambda and Pipelines
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
   source     = "app.terraform.io/SevenPico/s3-bucket/aws"
@@ -59,6 +61,7 @@ module "deployer_artifacts_bucket" {
 
 
 # ------------------------------------------------------------------------------
+# Deployer Lambda
 # ------------------------------------------------------------------------------
 module "deployer_lambda" {
   source     = "app.terraform.io/SevenPico/lambda-function/aws"
@@ -95,7 +98,7 @@ module "deployer_lambda" {
   sns_subscriptions                   = {}
   source_code_hash                    = data.archive_file.deployer_lambda[0].output_sha
   ssm_parameter_names                 = null
-  timeout                             = 3
+  timeout                             = 60
   tracing_config_mode                 = null
   vpc_config                          = null
 
@@ -134,6 +137,16 @@ resource "aws_lambda_permission" "artifact_sns" {
   principal     = "sns.amazonaws.com"
   source_arn    = var.artifact_sns_topic_arn
   statement_id  = "AllowExecutionFromSNS"
+}
+
+resource "aws_lambda_permission" "target_source_update_event" {
+  count = module.deployer_context.enabled ? 1 : 0
+
+  action        = "lambda:InvokeFunction"
+  function_name = module.deployer_lambda.function_name
+  principal     = "events.amazonaws.com"
+  statement_id  = "AllowExecutionFromCloudWatch"
+  source_arn    = module.ssm_target_source_update_event.rule_arn
 }
 
 
