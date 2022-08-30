@@ -3,10 +3,8 @@ module "cicd" {
   context = module.context.self
   name    = "cicd"
 
-  artifact_bucket_id             = module.artifact_bucket.bucket_id
-  artifact_sns_topic_arn         = module.artifact_monitor.sns_topic_arn
-  cloudwatch_log_expiration_days = 90
-  ecs_deployment_timeout         = 15
+  artifact_bucket_id     = module.artifact_bucket.bucket_id
+  artifact_sns_topic_arn = module.artifact_monitor.sns_topic_arn
 
   ecs_targets = {
     foo = {
@@ -26,11 +24,17 @@ module "cicd" {
       source_s3_bucket_id  = module.artifact_bucket.bucket_id
       source_s3_object_key = "sites/foo/foo-latest.zip"
       target_s3_bucket_id  = module.site_bucket["foo"].bucket_id
+      pre_deploy = {
+        buildspec   = "deployspec.yml"
+        permissions = []
+        env_vars    = []
+      }
     }
     bar = {
       source_s3_bucket_id  = module.artifact_bucket.bucket_id
       source_s3_object_key = "sites/bar/bar-latest.zip"
       target_s3_bucket_id  = module.site_bucket["bar"].bucket_id
+      pre_deploy           = null
     }
   }
 }

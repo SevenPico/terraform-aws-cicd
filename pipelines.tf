@@ -43,10 +43,14 @@ module "s3_pipeline" {
   artifact_store_kms_key_id      = ""
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
-  pre_deploy_enabled             = false
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
   source_s3_object_key           = "s3/${each.key}.zip"
   target_s3_bucket_id            = each.value.target_s3_bucket_id
+
+  pre_deploy_enabled               = (each.value.pre_deploy != null)
+  pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
+  pre_deploy_extra_permissions     = try(each.value.pre_deploy.permissions, [])
+  pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
 }
 
 

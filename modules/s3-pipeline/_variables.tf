@@ -23,6 +23,32 @@ variable "pre_deploy_enabled" {
   default = false
 }
 
+variable "pre_deploy_buildspec" {
+  type    = string
+  default = "deployspec.yml"
+}
+
+variable "pre_deploy_environment_variables" {
+  type = list(object({
+      name  = string
+      value = string
+      type  = string
+    }
+  ))
+
+  default = [
+    {
+      name  = "NO_ADDITIONAL_BUILD_VARS"
+      value = "TRUE"
+      type  = "PLAINTEXT"
+    }
+  ]
+}
+variable "pre_deploy_extra_permissions" {
+  type    = list(string)
+  default = []
+}
+
 variable "cloudwatch_log_expiration_days" {
   type    = string
   default = 90

@@ -11,6 +11,16 @@ variable "s3_targets" {
     source_s3_bucket_id  = string
     source_s3_object_key = string
     target_s3_bucket_id  = string
+    pre_deploy = object({
+      buildspec   = string
+      permissions = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
   }))
 }
 
