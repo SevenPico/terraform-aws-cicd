@@ -1,6 +1,5 @@
 module "pipeline" {
-  source  = "app.terraform.io/SevenPico/codepipeline/aws"
-  version = "0.0.1"
+  source  = "../codepipeline"
   context = module.context.self
 
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
