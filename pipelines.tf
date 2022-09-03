@@ -66,11 +66,15 @@ resource "aws_ssm_parameter" "target_source" {
   insecure_value  = each.value
   key_id          = null
   name            = "/${each.key}"
-  overwrite       = !var.ignore_target_source_changes
+  overwrite       = false
   tags            = module.context.tags
   tier            = "Standard"
   type            = "String"
   value           = null
+
+  lifecycle {
+    ignore_changes = [value, insecure_value]
+  }
 }
 
 

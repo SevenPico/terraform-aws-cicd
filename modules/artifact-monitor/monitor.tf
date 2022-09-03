@@ -7,8 +7,8 @@ module "sns_topic" {
   context = module.context.self
 
   kms_master_key_id = ""
-  pub_principals    = {}
-  sub_principals    = {}
+  pub_principals    = var.sns_pub_principals
+  sub_principals    = var.sns_sub_principals
 }
 
 
@@ -66,7 +66,7 @@ module "s3_event" {
   name     = each.key
 
   description = "S3 Object Created in s3://${each.key}"
-  target_arn         = module.sns_topic.topic_arn
+  target_arn  = module.sns_topic.topic_arn
 
   event_pattern = jsonencode({
     source      = ["aws.s3"]

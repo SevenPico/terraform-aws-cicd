@@ -4,6 +4,7 @@ variable "ecs_targets" {
     ecs_cluster_name = string
     ecs_service_name = string
   }))
+  default = {}
 }
 
 variable "s3_targets" {
@@ -22,6 +23,7 @@ variable "s3_targets" {
       ))
     })
   }))
+  default = {}
 }
 
 variable "cloudwatch_log_expiration_days" {
@@ -39,7 +41,7 @@ variable "artifact_sns_topic_arn" {
   default = ""
 }
 
-variable "ignore_target_source_changes" {
-  type    = bool
-  default = false
+variable "slack_webhook_url" {
+  type = string
+  default = ""
 }

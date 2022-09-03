@@ -26,7 +26,7 @@ module "deployer_artifacts_bucket" {
   bucket_key_enabled            = false
   bucket_name                   = null
   cors_rule_inputs              = null
-  force_destroy                 = false
+  force_destroy                 = true # no unique data stored here
   grants                        = []
   ignore_public_acls            = true
   kms_master_key_arn            = ""
@@ -153,8 +153,10 @@ resource "aws_lambda_permission" "target_source_update_event" {
 # ------------------------------------------------------------------------------
 # Lambda IAM
 # ------------------------------------------------------------------------------
-resource "aws_iam_role_policy_attachment" "lambda" {
+resource "aws_iam_role_policy_attachment" "deployer_lambda" {
   count      = module.deployer_context.enabled ? 1 : 0
+  depends_on = [module.deployer_lambda]
+
   role       = "${module.deployer_context.id}-role"
   policy_arn = module.deployer_lambda_policy.policy_arn
 }
@@ -164,7 +166,7 @@ module "deployer_lambda_policy" {
   version = "0.4.0"
   context = module.deployer_context.self
 
-  description                   = "deployer Lambda Access Policy"
+  description                   = "Deployer Lambda Access Policy"
   iam_override_policy_documents = null
   iam_policy_enabled            = true
   iam_policy_id                 = null
@@ -179,9 +181,9 @@ module "deployer_lambda_policy" {
         "ssm:GetParameters",
         "ssm:DescribeParameter*",
       ]
-      resources = concat(
-        [for p in aws_ssm_parameter.target_source : p.arn],
-      )
+      resources = [
+        for p in aws_ssm_parameter.target_source : p.arn
+      ]
     }
     S3PutArtifact = {
       effect  = "Allow"
