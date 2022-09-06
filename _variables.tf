@@ -41,7 +41,12 @@ variable "artifact_sns_topic_arn" {
   default = ""
 }
 
+variable "slack_notifications_enabled" {
+  type    = bool
+  default = false
+}
+
 variable "slack_webhook_url" {
-  type = string
+  type    = string
   default = ""
 }
