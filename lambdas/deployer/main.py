@@ -22,6 +22,8 @@ def lambda_handler(event, context):
     #e = { 'type': 'ecr', 'uri': '249974707517.dkr.ecr.us-east-1.amazonaws.com/foo:alpha' }
     #e = { 'type': 'ssm', 'action': 'update', 'parameter_name': '/ecs/foo'}
 
+    #Event: {'type': 'ecr', 'action': 'update', 'repository_name': 'content', 'repository_url': '425261882279.dkr.ecr.us-east-1.amazonaws.com/content', 'uri': '425261882279.dkr.ecr.us-east-1.amazonaws.com/content:test', 'tag': 'test'}
+
     print(f'Source Event: {e}')
 
     if e['type'] in ['ecr', 's3']:

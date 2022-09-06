@@ -17,3 +17,17 @@ variable "sns_sub_principals" {
   type    = map(list(string))
   default = {}
 }
+
+variable "cloudwatch_log_expiration_days" {
+  type    = string
+  default = 90
+}
+
+variable "slack_notifications_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "slack_webhook_url" {
+  type = string
+}

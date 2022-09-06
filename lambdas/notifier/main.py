@@ -1,9 +1,7 @@
 import boto3
 import json
 import logging
-import pathlib
-import zipfile
-from io import BytesIO
+import requests
 
 import config
 
@@ -11,89 +9,208 @@ config = config.Config()
 session = boto3.Session()
 
 def lambda_handler(event, context):
-    print(f'Lambda Input Event: {event}')
-    print(f'Lambda Input Context: {context}')
-
-    try:
-        e = json.loads(event['Records'][0]['Sns']['Message']) # handle sns trigger
-    except:
-        e = event
-
-    #e = { 'type': 'ecr', 'uri': '249974707517.dkr.ecr.us-east-1.amazonaws.com/foo:alpha' }
-    #e = { 'type': 'ssm', 'action': 'update', 'parameter_name': '/ecs/foo'}
-
-    print(f'Source Event: {e}')
-
-    if e['type'] in ['ecr', 's3']:
-        trigger_by_uri(e['uri'])
-
-    if e['type'] in ['ssm']:
-        trigger_by_name(e['parameter_name'][1:])
-
-
-def trigger_by_name(name):
-    for target_name, source_uri in get_target_source_map().items():
-        if name != target_name:
-            continue
-
-        type = target_name.split('/')[0]
-
-        if type == 'ecs':
-            trigger_ecs_pipeline(target_name, source_uri)
-        elif type == 's3':
-            trigger_s3_pipeline(target_name, source_uri)
-        else:
-            logging.warning(f"Unsupported event type '{type} for '{target_name}' {source_uri}")
-
-
-def trigger_by_uri(uri):
-    for target_name, source_uri in get_target_source_map().items():
-        if uri != source_uri:
-            continue
-        trigger_by_name(target_name)
-
-
-def get_target_source_map():
-    ssm = session.client('ssm')
-    response = ssm.get_parameters(Names = [f'/{name}' for name in config.target_names])
-
-    for p in response['Parameters']:
-        print(f"{p['Name']} = {p['Value']}")
-
-    for p in response['InvalidParameters']:
-        logging.error(f"SSM Parameter '{p}' not found.")
-
-    return { p['Name'][1:] : p['Value'].strip() for p in response['Parameters'] }
+    print(f"Lambda Input Event: {event}")
+    print(f"Lambda Input Context: {context}")
 
 
 
-def trigger_ecs_pipeline(target_name, image_uri):
-    print(f"Triggering '{target_name}' ECS pipeline with {image_uri}")
+# WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 
-    s3 = boto3.client('s3')
-    image_detail = [{ 'name': target_name.split('/')[-1], 'imageUri': image_uri }]
-
-    zip_file_object = BytesIO()
-    with zipfile.ZipFile(zip_file_object, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr('imagedefinitions.json', json.dumps(image_detail).encode('UTF'))
-        zf.close()
-        s3.put_object(
-            Bucket = config.deployer_artifacts_bucket_id,
-            Key    = f'{target_name}.zip',
-            Body   = zip_file_object.getvalue()
-        )
+# def main():
+#     artifact_info(type='ecr', uri='some-uri-here')
+#     # artifact_info(type='s3', uri='some-other-uri-here')
 
 
-def trigger_s3_pipeline(target_name, object_uri):
-    print(f"Triggering '{target_name}' S3 pipeline with {object_uri}")
+# def artifact_info(type, uri):
+#     request = {
+#         "blocks": [
+#             {
+#                 "type": "header",
+#                 "text": {
+#                     "type": "plain_text",
+#                     "text": f"Build Artifact Published",
+#                     "emoji": True
+#                 }
+#             },
+#             {
+#                 "type": "section",
+#                 "fields": [
+#                     {
+#                         "type": "mrkdwn",
+#                         "text": f"*Type:*\n{type.upper()}"
+#                     },
+#                     {
+#                         "type": "mrkdwn",
+#                         "text": f"*URI:*\n{uri}"
+#                     },
+#                 ]
+#             },
+# 	    ]
+#     }
 
-    suffix = pathlib.Path(object_uri).suffix
+#     response = requests.post(WEBHOOK_URL, json = request)
+#     print(response)
 
-    s3 = session.client('s3')
-    s3.copy_object(
-        Bucket     = config.deployer_artifacts_bucket_id,
-        Key        = f'{target_name}{suffix}',
-        CopySource = object_uri,
-    )
 
-#lambda_handler(None, None)
+# def deployment_info(deployment_id, target_name, source):
+#     return {
+#   	"text": f"Approval Required for Deployment to {target_name}",
+# 	"blocks": [
+# 		{
+# 			"type": "header",
+# 			"text": {
+# 				"type": "plain_text",
+# 				"text": "New request",
+# 				"emoji": True
+# 			}
+# 		},
+# 		{
+# 			"type": "section",
+# 			"fields": [
+# 				{
+# 					"type": "mrkdwn",
+# 					"text": "*Type:*\nPaid Time Off"
+# 				},
+# 				{
+# 					"type": "mrkdwn",
+# 					"text": "*Created by:*\n<example.com|Fred Enriquez>"
+# 				}
+# 			]
+# 		},
+# 		{
+# 			"type": "section",
+# 			"fields": [
+# 				{
+# 					"type": "mrkdwn",
+# 					"text": "*When:*\nAug 10 - Aug 13"
+# 				}
+# 			]
+# 		},
+# 		{
+# 			"type": "actions",
+# 			"elements": [
+# 				{
+# 					"type": "button",
+# 					"text": {
+# 						"type": "plain_text",
+# 						"emoji": True,
+# 						"text": "Approve"
+# 					},
+# 					"style": "primary",
+# 					"value": "click_me_123"
+# 				},
+# 				{
+# 					"type": "button",
+# 					"text": {
+# 						"type": "plain_text",
+# 						"emoji": True,
+# 						"text": "Reject"
+# 					},
+# 					"style": "danger",
+# 					"value": "click_me_123"
+# 				}
+# 			]
+# 		}
+# 	]
+# }
+
+# # def deployment_approval(target_name, source):
+# #     return {
+# #   	"text": f"Approval Required for Deployment to {target_name}",
+# # 	"blocks": [
+# # 		{
+# # 			"type": "header",
+# # 			"text": {
+# # 				"type": "plain_text",
+# # 				"text": "New request",
+# # 				"emoji": True
+# # 			}
+# # 		},
+# # 		{
+# # 			"type": "section",
+# # 			"fields": [
+# # 				{
+# # 					"type": "mrkdwn",
+# # 					"text": "*Type:*\nPaid Time Off"
+# # 				},
+# # 				{
+# # 					"type": "mrkdwn",
+# # 					"text": "*Created by:*\n<example.com|Fred Enriquez>"
+# # 				}
+# # 			]
+# # 		},
+# # 		{
+# # 			"type": "section",
+# # 			"fields": [
+# # 				{
+# # 					"type": "mrkdwn",
+# # 					"text": "*When:*\nAug 10 - Aug 13"
+# # 				}
+# # 			]
+# # 		},
+# # 		{
+# # 			"type": "actions",
+# # 			"elements": [
+# # 				{
+# # 					"type": "button",
+# # 					"text": {
+# # 						"type": "plain_text",
+# # 						"emoji": True,
+# # 						"text": "Approve"
+# # 					},
+# # 					"style": "primary",
+# # 					"value": "click_me_123"
+# # 				},
+# # 				{
+# # 					"type": "button",
+# # 					"text": {
+# # 						"type": "plain_text",
+# # 						"emoji": True,
+# # 						"text": "Reject"
+# # 					},
+# # 					"style": "danger",
+# # 					"value": "click_me_123"
+# # 				}
+# # 			]
+# # 		}
+# # 	]
+# # }
+
+
+# # request = {
+# #     "text": "Danny Torrence left a 1 star review for your property.",
+# #     "blocks": [
+# #     	{
+# #     		"type": "section",
+# #     		"text": {
+# #     			"type": "mrkdwn",
+# #     			"text": "Danny Torrence left the following review for your property:"
+# #     		}
+# #     	},
+# #     	{
+# #     		"type": "section",
+# #     		"block_id": "section567",
+# #     		"text": {
+# #     			"type": "mrkdwn",
+# #     			"text": "<https://example.com|Overlook Hotel> \n :star: \n Doors had too many axe holes, guest in room 237 was far too rowdy, whole place felt stuck in the 1920s."
+# #     		},
+# #     		"accessory": {
+# #     			"type": "image",
+# #     			"image_url": "https://is5-ssl.mzstatic.com/image/thumb/Purple3/v4/d3/72/5c/d3725c8f-c642-5d69-1904-aa36e4297885/source/256x256bb.jpg",
+# #     			"alt_text": "Haunted hotel image"
+# #     		}
+# #     	},
+# #     	{
+# #     		"type": "section",
+# #     		"block_id": "section789",
+# #     		"fields": [
+# #     			{
+# #     				"type": "mrkdwn",
+# #     				"text": "*Average Rating*\n1.0"
+# #     			}
+# #     		]
+# #     	}
+# #     ]
+# # }
+
+# main()
