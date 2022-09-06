@@ -32,6 +32,11 @@ def lambda_handler(event, context):
                 "elements": [
                     {
                         "type": "plain_text",
+                        "text": f"{e['detail']['pipeline']}",
+                        "emoji": True,
+                    },
+                    {
+                        "type": "plain_text",
                         "text": f"State: {e['detail']['state']}",
                         "emoji": True,
                     },

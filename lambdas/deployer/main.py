@@ -19,18 +19,13 @@ def lambda_handler(event, context):
     except:
         e = event
 
-    #e = { 'type': 'ecr', 'uri': '249974707517.dkr.ecr.us-east-1.amazonaws.com/foo:alpha' }
-    #e = { 'type': 'ssm', 'action': 'update', 'parameter_name': '/ecs/foo'}
-
-    #Event: {'type': 'ecr', 'action': 'update', 'repository_name': 'content', 'repository_url': '425261882279.dkr.ecr.us-east-1.amazonaws.com/content', 'uri': '425261882279.dkr.ecr.us-east-1.amazonaws.com/content:test', 'tag': 'test'}
-
     print(f'Source Event: {e}')
 
     if e['type'] in ['ecr', 's3']:
         trigger_by_uri(e['uri'])
 
     if e['type'] in ['ssm']:
-        trigger_by_name(e['parameter_name'][1:])
+        trigger_by_name(e['parameter_name'][1:]) # trim leading /
 
 
 def trigger_by_name(name):
@@ -38,7 +33,7 @@ def trigger_by_name(name):
         if name != target_name:
             continue
 
-        type = target_name.split('/')[0]
+        type = target_name.split('/')[-2] # {id}/{type}/{name}
 
         if type == 'ecs':
             trigger_ecs_pipeline(target_name, source_uri)
@@ -65,6 +60,7 @@ def get_target_source_map():
     for p in response['InvalidParameters']:
         logging.error(f"SSM Parameter '{p}' not found.")
 
+    # trim leading / from name
     return { p['Name'][1:] : p['Value'].strip() for p in response['Parameters'] }
 
 
@@ -73,7 +69,10 @@ def trigger_ecs_pipeline(target_name, image_uri):
     print(f"Triggering '{target_name}' ECS pipeline with {image_uri}")
 
     s3 = boto3.client('s3')
-    image_detail = [{ 'name': target_name.split('/')[-1], 'imageUri': image_uri }]
+    image_detail = [{
+        'name': target_name.split('/')[-1], # {id}/{type}/{name}
+        'imageUri': image_uri
+    }]
 
     zip_file_object = BytesIO()
     with zipfile.ZipFile(zip_file_object, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
@@ -97,5 +96,3 @@ def trigger_s3_pipeline(target_name, object_uri):
         Key        = f'{target_name}{suffix}',
         CopySource = object_uri,
     )
-
-#lambda_handler(None, None)

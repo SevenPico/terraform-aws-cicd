@@ -3,8 +3,8 @@
 # ------------------------------------------------------------------------------
 locals {
   targets = merge(
-    { for k, v in var.ecs_targets : "ecs/${k}" => v.image_uri },
-    { for k, v in var.s3_targets : "s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
+    { for k, v in var.ecs_targets : "${module.context.id}/ecs/${k}" => v.image_uri },
+    { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
   )
 }
 
@@ -26,7 +26,7 @@ module "ecs_pipeline" {
   ecs_service_name               = each.value.ecs_service_name
   ecs_deployment_timeout         = var.ecs_deployment_timeout
   image_detail_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  image_detail_s3_object_key     = "ecs/${each.key}.zip"
+  image_detail_s3_object_key     = "${module.context.id}/ecs/${each.key}.zip"
 }
 
 
@@ -44,7 +44,7 @@ module "s3_pipeline" {
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key           = "s3/${each.key}.zip"
+  source_s3_object_key           = "${module.context.id}/s3/${each.key}.zip"
   target_s3_bucket_id            = each.value.target_s3_bucket_id
 
   pre_deploy_enabled               = (each.value.pre_deploy != null)

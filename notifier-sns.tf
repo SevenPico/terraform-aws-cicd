@@ -27,7 +27,10 @@ module "codepipeline_event" {
     source      = ["aws.codepipeline"]
     detail-type = ["CodePipeline Pipeline Execution State Change"]
     detail = {
-      pipeline = ["${module.context.id}-*"]
+      pipeline = concat(
+        [for p in module.s3_pipeline : p.id],
+        [for p in module.ecs_pipeline : p.id],
+      )
     }
   })
 }
