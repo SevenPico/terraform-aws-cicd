@@ -5,7 +5,7 @@ module "notifier_context" {
   source     = "app.terraform.io/SevenPico/context/null"
   version    = "1.0.1"
   context    = module.context.self
-  enabled = module.context.enabled && var.slack_notifications_enabled
+  enabled    = module.context.enabled && var.slack_notifications_enabled
   attributes = ["notifier"]
 }
 
@@ -54,7 +54,8 @@ module "notifier_lambda" {
 
   lambda_environment = {
     variables = {
-      SLACK_WEBHOOK_URL = var.slack_webhook_url
+      SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
+      SLACK_SECRET_ARN = "FIXME"
     }
   }
 }
@@ -113,7 +114,7 @@ module "notifier_lambda_policy" {
   iam_source_policy_documents   = null
 
   iam_policy_statements = {
-    # FIXME
+    # FIXME - secret read
     S3GetArtifact = {
       effect    = "Allow"
       actions   = ["s3:Get*"]
@@ -121,42 +122,3 @@ module "notifier_lambda_policy" {
     }
   }
 }
-
-
-# ------------------------------------------------------------------------------
-# Notifier DynamoDB Table
-# ------------------------------------------------------------------------------
-# module "notifier_table" {
-#   source     = "cloudposse/dynamodb/aws"
-#   version    = "0.29.5"
-#   context    = module.notifier_context.self
-#   attributes = ["table"]
-
-#   hash_key       = "execution-id"
-#   hash_key_type  = "S"
-#   range_key      = ""
-#   range_key_type = "S"
-
-#   billing_mode                       = "PAY_PER_REQUEST"
-#   enable_point_in_time_recovery      = false
-#   enable_streams                     = false
-#   global_secondary_index_map         = []
-#   local_secondary_index_map          = []
-#   replicas                           = []
-#   stream_view_type                   = ""
-#   tags_enabled                       = true
-#   dynamodb_attributes                = []
-#   ttl_attribute                      = "Expires"
-#   ttl_enabled                        = true
-#   enable_encryption                  = false
-#   server_side_encryption_kms_key_arn = null
-#   enable_autoscaler                  = false
-#   autoscale_max_read_capacity        = 20
-#   autoscale_max_write_capacity       = 20
-#   autoscale_min_read_capacity        = 5
-#   autoscale_min_write_capacity       = 5
-#   autoscale_read_target              = 50
-#   autoscale_write_target             = 50
-#   autoscaler_attributes              = []
-#   autoscaler_tags                    = {}
-# }

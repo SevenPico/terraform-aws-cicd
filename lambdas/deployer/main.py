@@ -52,17 +52,21 @@ def trigger_by_uri(uri):
 
 def get_target_source_map():
     ssm = session.client('ssm')
-    response = ssm.get_parameters(Names = [f'/{name}' for name in config.target_names])
 
-    for p in response['Parameters']:
-        print(f"{p['Name']} = {p['Value']}")
+    target_source_map = {}
+    N = 10 # get_parameters needs to be called with small chunks
+    for i in range(0, N):
+        response = ssm.get_parameters(Names = [f'/{name}' for name in config.target_names[i::N]])
 
-    for p in response['InvalidParameters']:
-        logging.error(f"SSM Parameter '{p}' not found.")
+        for p in response['Parameters']:
+            print(f"{p['Name']} = {p['Value']}")
 
-    # trim leading / from name
-    return { p['Name'][1:] : p['Value'].strip() for p in response['Parameters'] }
+        for p in response['InvalidParameters']:
+            logging.error(f"SSM Parameter '{p}' not found.")
 
+        # trim leading / from name
+        target_source_map |= { p['Name'][1:] : p['Value'].strip() for p in response['Parameters'] }
+    return target_source_map
 
 
 def trigger_ecs_pipeline(target_name, image_uri):

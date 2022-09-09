@@ -46,7 +46,12 @@ variable "slack_notifications_enabled" {
   default = false
 }
 
-variable "slack_webhook_url" {
+variable "slack_channel_ids" {
+  type    = list(string)
+  default = []
+}
+
+variable "slack_token_secret_arn" {
   type    = string
   default = ""
 }
