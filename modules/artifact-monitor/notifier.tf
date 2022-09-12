@@ -54,7 +54,8 @@ module "notifier_lambda" {
 
   lambda_environment = {
     variables = {
-      SLACK_WEBHOOK_URL = var.slack_webhook_url
+      SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
+      SLACK_SECRET_ARN  = "FIXME"
     }
   }
 }

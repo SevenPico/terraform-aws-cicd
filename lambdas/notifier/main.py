@@ -34,7 +34,7 @@ def lambda_handler(event, context):
         elif state == 'SUCCEEDED':
             post_update_message(execution_id, channel_id, state, 'rocket')
         elif state == 'FAILED':
-            post_update_message(execution_id, channel_id, state, 'shit')
+            post_update_message(execution_id, channel_id, state, 'hankey')
         else:
             post_update_message(execution_id, channel_id, state)
 

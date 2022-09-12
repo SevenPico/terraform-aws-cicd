@@ -1,75 +1,68 @@
 import json
 import urllib3
+import os
+import re
 
 import config
 
 config = config.Config()
+http = urllib3.PoolManager()
 
+def get_slack_token(secret_arn):
+    return 'xoxb-700662707543-4040047362071-tlXU55bIcBeP59xSyvQdgVqY'
+
+SLACK_URL = 'https://slack.com/api'
+SLACK_TOKEN = get_slack_token(config.slack_secret_arn)
 
 def lambda_handler(event, context):
-    print(f"Lambda Input Event: {event}")
-    print(f"Lambda Input Context: {context}")
+    print(f'Lambda Input Event: {event}')
+    print(f'Lambda Input Context: {context}')
 
-    http = urllib3.PoolManager()
+    e = json.loads(event['Records'][0]['Sns']['Message'])
+    print(f'Event: {e}')
 
-    e = json.loads(event["Records"][0]["Sns"]["Message"])
-    print(f"Event: {e}")
+    type = e['type'].upper()
+    uri = e['uri']
 
-    request = {
-        "blocks": [
-            {"type": "divider"},
+    if type == 'ECR':
+        artifact, version = e['repository_name'], e['tag']
+    elif type == 'S3':
+        artifact, version = get_artifact_name_version(os.path.basename(e['key']), config.artifact_regex)
+    else:
+        artifact, version  = '', ''
+
+    msg = {
+        'blocks': [
             {
-                "type": "section",
-                "text": {
-                    "type": "plain_text",
-                    "text": "Build Artifact Published",
-                    "emoji": True,
-                },
+                'type': 'section',
+                'text': { 'type': 'plain_text', 'text': 'Build Artifact Published' },
             },
             {
-                "type": "context",
-                "elements": [
-                    {
-                        "type": "plain_text",
-                        "text": f"Type: {e['type'].upper()}",
-                        "emoji": True,
-                    },
-                    {"type": "plain_text", "text": f"{e['uri']}", "emoji": True},
-                ],
+                'type': 'context',
+                'elements': [
+                    {'type': 'plain_text', 'text': f'Type: {type}' },
+                    {'type': 'plain_text', 'text': uri},
+                    {'type': 'plain_text', 'text': f'Artifact: {artifact}' },
+                    {'type': 'plain_text', 'text': f'Version: {version}'},
+                ]
             },
         ]
     }
 
-    if e["type"] == "ecr":
-        request["blocks"] += [
-            {
-                "type": "context",
-                "elements": [
-                    {
-                        "type": "plain_text",
-                        "text": f"Repository: {e['repository_name']}",
-                        "emoji": True,
-                    },
-                    {"type": "plain_text", "text": f"Tag: {e['tag']}", "emoji": True},
-                ],
-            },
-        ]
+    print('Slack Message:', msg)
 
-    if e["type"] == "s3":
-        request["blocks"] += [
-            {
-                "type": "context",
-                "elements": [
-                    {
-                        "type": "plain_text",
-                        "text": f"Bucket: {e['bucket_id']}",
-                        "emoji": True,
-                    },
-                    {"type": "plain_text", "text": f"Key: {e['key']}", "emoji": True},
-                ],
+    for channel_id in config.slack_channel_ids:
+        response = http.request('POST', f'{SLACK_URL}/chat.postMessage',
+            body = json.dumps(msg).encode('utf-8'),
+            fields = {'channel': channel_id},
+            headers = {
+                'Content-type': 'application/json; charset=utf-8',
+                'Authorization': f'Bearer {SLACK_TOKEN}',
             },
-        ]
+        )
+        print('Slack Response:', response)
 
-    print("Slack Request:", request)
-    response = http.request("POST", config.slack_webhook_url, body=json.dumps(request))
-    print("Slack Response:", response)
+
+def get_artifact_name_version(artifact, artifact_re):
+    match = re.search(artifact_re, artifact)
+    return(match.group('name'), match.group('version'))
