@@ -88,3 +88,41 @@ resource "aws_lambda_permission" "notifier_sns" {
   source_arn    = module.sns_topic.topic_arn
   statement_id  = "AllowExecutionFromSNS"
 }
+
+
+# ------------------------------------------------------------------------------
+# Lambda IAM
+# ------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "notifier_lambda" {
+  count      = module.notifier_context.enabled ? 1 : 0
+  depends_on = [module.notifier_lambda]
+
+  role       = "${module.notifier_context.id}-role"
+  policy_arn = module.notifier_lambda_policy.policy_arn
+}
+
+module "notifier_lambda_policy" {
+  source  = "cloudposse/iam-policy/aws"
+  version = "0.4.0"
+  context = module.notifier_context.self
+
+  description                   = "Notifier Lambda Access Policy"
+  iam_override_policy_documents = null
+  iam_policy_enabled            = true
+  iam_policy_id                 = null
+  iam_source_json_url           = null
+  iam_source_policy_documents   = null
+
+  iam_policy_statements = {
+    SecretRead = {
+      effect    = "Allow"
+      actions   = ["secretsmanager:GetSecretValue"]
+      resources = [var.slack_token_secret_arn]
+    }
+    KmsDecrypt = {
+      effect    = "Allow"
+    actions = [ "kms:Decrypt", "kms:DescribeKey" ]
+      resources = [var.slack_token_secret_kms_key_arn]
+    }
+  }
+}

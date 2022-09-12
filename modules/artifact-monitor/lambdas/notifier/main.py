@@ -2,14 +2,20 @@ import json
 import urllib3
 import os
 import re
+import boto3
 
 import config
 
 config = config.Config()
 http = urllib3.PoolManager()
+session = boto3.Session()
 
 def get_slack_token(secret_arn):
-    return 'xoxb-700662707543-4040047362071-tlXU55bIcBeP59xSyvQdgVqY'
+    client = session.client('secretsmanager')
+    response = client.get_secret_value(
+        SecretId = secret_arn
+    )
+    return response['SecretString']
 
 SLACK_URL = 'https://slack.com/api'
 SLACK_TOKEN = get_slack_token(config.slack_secret_arn)
