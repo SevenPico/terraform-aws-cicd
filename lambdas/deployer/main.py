@@ -50,13 +50,18 @@ def trigger_by_uri(uri):
         trigger_by_name(target_name)
 
 
+def chunk_list(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 def get_target_source_map():
     ssm = session.client('ssm')
 
     target_source_map = {}
-    N = 10 # get_parameters needs to be called with small chunks
-    for i in range(0, N):
-        response = ssm.get_parameters(Names = [f'/{name}' for name in config.target_names[i::N]])
+
+    N = 10 # get_parameters needs to be called in batches <= 10
+    for chunk in chunk_list(config.target_names, N):
+        response = ssm.get_parameters(Names = [f'/{name}' for name in chunk])
 
         for p in response['Parameters']:
             print(f"{p['Name']} = {p['Value']}")
