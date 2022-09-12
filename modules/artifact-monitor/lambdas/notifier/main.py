@@ -52,9 +52,9 @@ def lambda_handler(event, context):
     print('Slack Message:', msg)
 
     for channel_id in config.slack_channel_ids:
+        msg['channel'] = channel_id
         response = http.request('POST', f'{SLACK_URL}/chat.postMessage',
             body = json.dumps(msg).encode('utf-8'),
-            fields = {'channel': channel_id},
             headers = {
                 'Content-type': 'application/json; charset=utf-8',
                 'Authorization': f'Bearer {SLACK_TOKEN}',
