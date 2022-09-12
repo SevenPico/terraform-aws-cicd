@@ -55,7 +55,7 @@ module "notifier_lambda" {
   lambda_environment = {
     variables = {
       SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
-      SLACK_SECRET_ARN  = "FIXME"
+      SLACK_SECRET_ARN  = var.slack_token_secret_arn
     }
   }
 }

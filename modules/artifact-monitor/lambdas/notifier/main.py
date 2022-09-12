@@ -38,6 +38,7 @@ def lambda_handler(event, context):
         artifact, version  = '', ''
 
     msg = {
+        'text': f'Build Artifact Published: {artifact}',
         'blocks': [
             {
                 'type': 'section',
