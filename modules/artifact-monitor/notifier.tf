@@ -121,7 +121,7 @@ module "notifier_lambda_policy" {
     }
     KmsDecrypt = {
       effect    = "Allow"
-    actions = [ "kms:Decrypt", "kms:DescribeKey" ]
+      actions   = ["kms:Decrypt", "kms:DescribeKey"]
       resources = [var.slack_token_secret_kms_key_arn]
     }
   }

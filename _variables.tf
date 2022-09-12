@@ -55,3 +55,7 @@ variable "slack_token_secret_arn" {
   type    = string
   default = ""
 }
+variable "slack_token_secret_kms_key_arn" {
+  type    = string
+  default = ""
+}

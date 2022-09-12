@@ -55,7 +55,7 @@ module "notifier_lambda" {
   lambda_environment = {
     variables = {
       SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
-      SLACK_SECRET_ARN  = "FIXME"
+      SLACK_SECRET_ARN  = var.slack_token_secret_arn
     }
   }
 }
@@ -114,11 +114,15 @@ module "notifier_lambda_policy" {
   iam_source_policy_documents   = null
 
   iam_policy_statements = {
-    # FIXME - secret read
-    S3GetArtifact = {
+    SecretRead = {
       effect    = "Allow"
-      actions   = ["s3:Get*"]
-      resources = ["*"]
+      actions   = ["secretsmanager:GetSecretValue"]
+      resources = [var.slack_token_secret_arn]
+    }
+    KmsDecrypt = {
+      effect    = "Allow"
+      actions   = ["kms:Decrypt", "kms:DescribeKey"]
+      resources = [var.slack_token_secret_kms_key_arn]
     }
   }
 }
