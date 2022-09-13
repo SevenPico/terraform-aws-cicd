@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "notifier_context" {
   source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.0.1"
+  version    = "1.0.2"
   context    = module.context.self
   enabled    = module.context.enabled && var.slack_notifications_enabled
   attributes = ["notifier"]
@@ -16,7 +16,7 @@ module "notifier_context" {
 module "notifier_lambda" {
   source     = "app.terraform.io/SevenPico/lambda-function/aws"
   version    = "0.1.0.2"
-  context    = module.notifier_context.self
+  context    = module.notifier_context.legacy
   attributes = ["lambda"]
 
   architectures                       = null
