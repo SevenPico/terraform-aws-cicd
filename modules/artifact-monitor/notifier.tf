@@ -104,7 +104,7 @@ resource "aws_iam_role_policy_attachment" "notifier_lambda" {
 module "notifier_lambda_policy" {
   source  = "cloudposse/iam-policy/aws"
   version = "0.4.0"
-  context = module.notifier_context.self
+  context = module.notifier_context.legacy
 
   description                   = "Notifier Lambda Access Policy"
   iam_override_policy_documents = null
