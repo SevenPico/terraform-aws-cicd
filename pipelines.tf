@@ -66,7 +66,7 @@ resource "aws_ssm_parameter" "target_source" {
   insecure_value  = null
   key_id          = module.kms_key.key_arn
   name            = "/${each.key}"
-  overwrite       = false
+  overwrite       = var.overwrite_ssm_parameters
   tags            = module.context.tags
   tier            = "Standard"
   type            = "String"

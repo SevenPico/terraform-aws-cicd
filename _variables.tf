@@ -75,3 +75,8 @@ variable "kms_key_enable_key_rotation" {
   type    = bool
   default = true
 }
+
+variable "overwrite_ssm_parameters" {
+  type = bool
+  default = false
+}
