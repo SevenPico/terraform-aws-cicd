@@ -29,7 +29,7 @@ module "deployer_artifacts_bucket" {
   force_destroy                 = true # no unique data stored here
   grants                        = []
   ignore_public_acls            = true
-  kms_master_key_arn            = module.kms_key.key_arn
+  kms_master_key_arn            = ""
   lifecycle_configuration_rules = []
   logging                       = {}
   object_lock_configuration     = null
