@@ -69,7 +69,7 @@ resource "aws_ssm_parameter" "target_source" {
   overwrite       = var.overwrite_ssm_parameters
   tags            = module.context.tags
   tier            = "Standard"
-  type            = "String"
+  type            = "SecureString"
   value           = each.value
 
   lifecycle {
