@@ -46,7 +46,7 @@ module "notifier_lambda" {
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.notifier_lambda[0].output_sha
+  source_code_hash                    = data.archive_file.notifier_lambda[0].output_base64sha256
   ssm_parameter_names                 = null
   timeout                             = 60
   tracing_config_mode                 = null
@@ -56,6 +56,7 @@ module "notifier_lambda" {
     variables = {
       SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
       SLACK_SECRET_ARN  = var.slack_token_secret_arn
+      PROJECT = module.context.project
     }
   }
 }

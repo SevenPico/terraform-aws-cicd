@@ -96,7 +96,7 @@ module "deployer_lambda" {
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.deployer_lambda[0].output_sha
+  source_code_hash                    = data.archive_file.deployer_lambda[0].output_base64sha256
   ssm_parameter_names                 = null
   timeout                             = 60
   tracing_config_mode                 = null
