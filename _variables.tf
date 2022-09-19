@@ -55,7 +55,23 @@ variable "slack_token_secret_arn" {
   type    = string
   default = ""
 }
+
 variable "slack_token_secret_kms_key_arn" {
   type    = string
   default = ""
+}
+
+variable "create_kms_key" {
+  type    = bool
+  default = false
+}
+
+variable "kms_key_deletion_window_in_days" {
+  type    = number
+  default = 30
+}
+
+variable "kms_key_enable_key_rotation" {
+  type    = bool
+  default = true
 }

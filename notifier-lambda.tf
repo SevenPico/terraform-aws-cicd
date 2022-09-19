@@ -22,7 +22,7 @@ module "notifier_lambda" {
   architectures                       = null
   cloudwatch_event_rules              = {}
   cloudwatch_lambda_insights_enabled  = false
-  cloudwatch_logs_kms_key_arn         = null
+  cloudwatch_logs_kms_key_arn         = module.kms_key.key_arn
   cloudwatch_logs_retention_in_days   = var.cloudwatch_log_expiration_days
   cloudwatch_log_subscription_filters = {}
   description                         = "Notify on Pipeline Events."
@@ -33,7 +33,7 @@ module "notifier_lambda" {
   ignore_external_function_updates    = false
   image_config                        = {}
   image_uri                           = null
-  kms_key_arn                         = ""
+  kms_key_arn                         = module.kms_key.key_arn
   lambda_at_edge                      = false
   layers                              = []
   memory_size                         = 128
@@ -56,7 +56,7 @@ module "notifier_lambda" {
     variables = {
       SLACK_CHANNEL_IDS = join(",", var.slack_channel_ids)
       SLACK_SECRET_ARN  = var.slack_token_secret_arn
-      PROJECT = module.context.project
+      PROJECT           = module.context.self.project
     }
   }
 }

@@ -19,7 +19,7 @@ module "ecs_pipeline" {
   for_each   = var.ecs_targets
   attributes = ["ecs", each.key]
 
-  artifact_store_kms_key_id      = ""
+  artifact_store_kms_key_id      = module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   ecs_cluster_name               = each.value.ecs_cluster_name
@@ -40,7 +40,7 @@ module "s3_pipeline" {
   for_each   = var.s3_targets
   attributes = ["s3", each.key]
 
-  artifact_store_kms_key_id      = ""
+  artifact_store_kms_key_id      = module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
@@ -63,18 +63,36 @@ resource "aws_ssm_parameter" "target_source" {
   allowed_pattern = null # TODO
   data_type       = "text"
   description     = "Artifact Source '${each.key}'"
-  insecure_value  = each.value
-  key_id          = null
+  insecure_value  = null
+  key_id          = module.kms_key.key_arn
   name            = "/${each.key}"
   overwrite       = false
   tags            = module.context.tags
   tier            = "Standard"
   type            = "String"
-  value           = null
+  value           = each.value
 
   lifecycle {
     ignore_changes = [value, insecure_value]
   }
+}
+
+
+# ------------------------------------------------------------------------------
+# KMS Key
+# ------------------------------------------------------------------------------
+module "kms_key" {
+  source  = "app.terraform.io/SevenPico/kms-key/aws"
+  version = "0.12.1.2"
+  context = module.context.self
+  enabled = module.context.enabled && var.create_kms_key
+
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  deletion_window_in_days  = var.kms_key_deletion_window_in_days
+  description              = "KMS key for CI/CD"
+  enable_key_rotation      = var.kms_key_enable_key_rotation
+  key_usage                = "ENCRYPT_DECRYPT"
+  multi_region             = false
 }
 
 

@@ -29,7 +29,7 @@ module "deployer_artifacts_bucket" {
   force_destroy                 = true # no unique data stored here
   grants                        = []
   ignore_public_acls            = true
-  kms_master_key_arn            = ""
+  kms_master_key_arn            = module.kms_key.key_arn
   lifecycle_configuration_rules = []
   logging                       = {}
   object_lock_configuration     = null
@@ -72,7 +72,7 @@ module "deployer_lambda" {
   architectures                       = null
   cloudwatch_event_rules              = {}
   cloudwatch_lambda_insights_enabled  = false
-  cloudwatch_logs_kms_key_arn         = null
+  cloudwatch_logs_kms_key_arn         = module.kms_key.key_arn
   cloudwatch_logs_retention_in_days   = var.cloudwatch_log_expiration_days
   cloudwatch_log_subscription_filters = {}
   description                         = "Trigger Deployment Pipelines on Artifact Update Notification."
@@ -83,7 +83,7 @@ module "deployer_lambda" {
   ignore_external_function_updates    = false
   image_config                        = {}
   image_uri                           = null
-  kms_key_arn                         = ""
+  kms_key_arn                         = module.kms_key.key_arn
   lambda_at_edge                      = false
   layers                              = []
   memory_size                         = 128
