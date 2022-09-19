@@ -65,7 +65,7 @@ resource "aws_ssm_parameter" "target_source" {
   description     = "Artifact Source '${each.key}'"
   insecure_value  = null
   key_id          = module.kms_key.key_arn
-  name            = "/${each.key}"
+  name            = "/version/${each.key}"
   overwrite       = var.overwrite_ssm_parameters
   tags            = module.context.tags
   tier            = "Standard"

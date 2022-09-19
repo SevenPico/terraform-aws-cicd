@@ -61,16 +61,17 @@ def get_target_source_map():
 
     N = 10 # get_parameters needs to be called in batches <= 10
     for chunk in chunk_list(config.target_names, N):
-        response = ssm.get_parameters(Names = [f'/{name}' for name in chunk])
-
-        for p in response['Parameters']:
-            print(f"{p['Name']} = {p['Value']}")
+        response = ssm.get_parameters(Names = [f'/version/{name}' for name in chunk])
 
         for p in response['InvalidParameters']:
             logging.error(f"SSM Parameter '{p}' not found.")
 
-        # trim leading / from name
-        target_source_map |= { p['Name'][1:] : p['Value'].strip() for p in response['Parameters'] }
+        for p in response['Parameters']:
+            name = p['Name'].removeprefix("/version/")
+            target_source_map[name] = p['Value'].strip()
+
+            print(f"{p['Name']} = {p['Value']}")
+
     return target_source_map
 
 
