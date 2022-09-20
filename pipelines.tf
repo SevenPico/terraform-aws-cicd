@@ -19,7 +19,7 @@ module "ecs_pipeline" {
   for_each   = var.ecs_targets
   attributes = ["ecs", each.key]
 
-  artifact_store_kms_key_arn     = module.kms_key.key_arn
+  artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   ecs_cluster_name               = each.value.ecs_cluster_name
@@ -40,7 +40,7 @@ module "s3_pipeline" {
   for_each   = var.s3_targets
   attributes = ["s3", each.key]
 
-  artifact_store_kms_key_arn     = module.kms_key.key_arn
+  artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
@@ -89,7 +89,7 @@ module "kms_key" {
 
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
   deletion_window_in_days  = var.kms_key_deletion_window_in_days
-  description              = "KMS key for CI/CD"
+  description              = "KMS key for CI/CD ${module.context.id}"
   enable_key_rotation      = var.kms_key_enable_key_rotation
   key_usage                = "ENCRYPT_DECRYPT"
   multi_region             = false

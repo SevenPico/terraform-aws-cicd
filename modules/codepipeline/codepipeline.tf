@@ -107,11 +107,12 @@ module "codepipeline_iam_policy" {
       resources  = ["*"]
       conditions = []
     },
-    kms = {
-      effect    = "Allow"
-      actions   = ["kms:Encrypt", "kms:Decrypt", "kms:DescribeKey"]
-      resources = [var.artifact_store_kms_key_arn]
-    }
+    # FIXME
+    # kms = {
+    #   effect    = "Allow"
+    #   actions   = ["kms:Encrypt", "kms:Decrypt", "kms:DescribeKey"]
+    #   resources = [var.artifact_store_kms_key_arn]
+    # }
   }, var.iam_policy_statements)
 }
 
