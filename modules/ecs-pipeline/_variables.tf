@@ -24,7 +24,7 @@ variable "artifact_store_s3_bucket_id" {
   default = ""
 }
 
-variable "artifact_store_kms_key_id" {
+variable "artifact_store_kms_key_arn" {
   type    = string
   default = ""
 }

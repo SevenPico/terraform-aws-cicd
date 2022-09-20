@@ -11,9 +11,9 @@ resource "aws_codepipeline" "this" {
     type     = "S3"
 
     dynamic "encryption_key" {
-      for_each = toset(var.artifact_store_kms_key_id == "" ? [] : [1])
+      for_each = toset(var.artifact_store_kms_key_arn == "" ? [] : [1])
       content {
-        id   = var.artifact_store_kms_key_id
+        id   = var.artifact_store_kms_key_arn
         type = "KMS"
       }
     }
@@ -110,7 +110,7 @@ module "codepipeline_iam_policy" {
     kms = {
       effect    = "Allow"
       actions   = ["kms:Encrypt", "kms:Decrypt", "kms:DescribeKey"]
-      resources = [var.artifact_store_kms_key_id]
+      resources = [var.artifact_store_kms_key_arn]
     }
   }, var.iam_policy_statements)
 }

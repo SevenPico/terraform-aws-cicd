@@ -6,7 +6,7 @@ module "notifier_sns" {
   version = "1.0.0"
   context = module.context.self
 
-  kms_master_key_id = module.kms_key.key_id
+  kms_master_key_id = ""
   pub_principals    = {}
   sub_principals    = {}
 }

@@ -19,7 +19,7 @@ module "ecs_pipeline" {
   for_each   = var.ecs_targets
   attributes = ["ecs", each.key]
 
-  artifact_store_kms_key_id      = module.kms_key.key_id
+  artifact_store_kms_key_arn     = module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   ecs_cluster_name               = each.value.ecs_cluster_name
@@ -40,7 +40,7 @@ module "s3_pipeline" {
   for_each   = var.s3_targets
   attributes = ["s3", each.key]
 
-  artifact_store_kms_key_id      = module.kms_key.key_id
+  artifact_store_kms_key_arn     = module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
@@ -64,7 +64,7 @@ resource "aws_ssm_parameter" "target_source" {
   data_type       = "text"
   description     = "Artifact Source '${each.key}'"
   insecure_value  = null
-  key_id          = module.kms_key.key_id
+  key_id          = module.kms_key.key_arn
   name            = "/version/${each.key}"
   overwrite       = var.overwrite_ssm_parameters
   tags            = module.context.tags

@@ -6,7 +6,7 @@ variable "artifact_store_s3_bucket_id" {
   type = string
 }
 
-variable "artifact_store_kms_key_id" {
+variable "artifact_store_kms_key_arn" {
   type        = string
   default     = ""
   description = "If undefined, then default key for S3 is used."
