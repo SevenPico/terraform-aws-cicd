@@ -61,7 +61,7 @@ def get_target_source_map():
 
     N = 10 # get_parameters needs to be called in batches <= 10
     for chunk in chunk_list(config.target_names, N):
-        response = ssm.get_parameters(Names = [f'/version/{name}' for name in chunk])
+        response = ssm.get_parameters(Names = [f'/version/{name}' for name in chunk], WithDecryption = True)
 
         for p in response['InvalidParameters']:
             logging.error(f"SSM Parameter '{p}' not found.")
