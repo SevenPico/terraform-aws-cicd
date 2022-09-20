@@ -99,8 +99,11 @@ def post_start_message(msg_id, channel_id, context={}):
                 }
             },
             {
-                'type': 'context',
-                'elements': [{'type': 'plain_text', 'text': f'{k}: {context[k]}'} for k in context]
+                'type': 'section',
+                'text': {
+                    'type': 'mrkdwn',
+                    'text': '\n'.join([f'{key}: `{value}`' for key, value in context.items()]),
+                }
             },
         ]
     }
