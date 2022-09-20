@@ -185,6 +185,11 @@ module "deployer_lambda_policy" {
         for p in aws_ssm_parameter.target_source : p.arn
       ]
     }
+    KmsSsmDecrypt = {
+      effect    = "Allow"
+      actions   = ["kms:Decrypt", "kms:DescribeKey"]
+      resources = [module.kms_key.key_arn]
+    }
     S3PutArtifact = {
       effect  = "Allow"
       actions = ["s3:PutObject"]
