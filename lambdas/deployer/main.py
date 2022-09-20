@@ -25,7 +25,8 @@ def lambda_handler(event, context):
         trigger_by_uri(e['uri'])
 
     if e['type'] in ['ssm']:
-        trigger_by_name(e['parameter_name'][1:]) # trim leading /
+        name = e['parameter_name'].removeprefix("/version/")
+        trigger_by_name(name)
 
 
 def trigger_by_name(name):

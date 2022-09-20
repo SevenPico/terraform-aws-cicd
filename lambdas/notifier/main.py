@@ -30,8 +30,8 @@ def lambda_handler(event, context):
     state        = e['detail']['state']
 
     context = {
-        'project': 'foobar',
-        'pipeline': e['detail']['pipeline']
+        'project': config.project,
+        'pipeline': e['detail']['pipeline'],
     }
 
     for channel_id in config.slack_channel_ids:
