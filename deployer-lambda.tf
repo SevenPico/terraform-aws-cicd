@@ -14,7 +14,7 @@ module "deployer_context" {
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
   source     = "app.terraform.io/SevenPico/s3-bucket/aws"
-  version    = "3.0.0"
+  version    = "3.1.8"
   context    = module.deployer_context.self
   attributes = ["artifacts"]
 
@@ -26,6 +26,7 @@ module "deployer_artifacts_bucket" {
   bucket_key_enabled            = false
   bucket_name                   = null
   cors_rule_inputs              = null
+  enable_mfa_delete             = var.enable_mfa_delete
   force_destroy                 = true # no unique data stored here
   grants                        = []
   ignore_public_acls            = true
@@ -36,7 +37,7 @@ module "deployer_artifacts_bucket" {
   privileged_principal_actions  = []
   privileged_principal_arns     = []
   restrict_public_buckets       = true
-  s3_object_ownership           = "ObjectWriter"
+  s3_object_ownership           = var.s3_object_ownership
   s3_replica_bucket_arn         = ""
   s3_replication_enabled        = false
   s3_replication_rules          = null
