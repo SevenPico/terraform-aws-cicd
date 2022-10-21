@@ -80,3 +80,15 @@ variable "overwrite_ssm_parameters" {
   type = bool
   default = false
 }
+
+variable "enable_mfa_delete" {
+  type = bool
+  default = false
+  description = "Set this to true to enable MFA on bucket. You must also set `versioning_enabled` to `true`."
+}
+
+variable "s3_object_ownership" {
+  type        = string
+  default     = "BucketOwnerEnforced"
+  description = "Specifies the S3 object ownership control. Valid values are `ObjectWriter`, `BucketOwnerPreferred`, and 'BucketOwnerEnforced'."
+}
