@@ -8,6 +8,34 @@ module "deployer_context" {
   attributes = ["deployer"]
 }
 
+# ------------------------------------------------------------------------------
+# S3 Deployer Artifacts Bucket Policy
+# ------------------------------------------------------------------------------
+data "aws_iam_policy_document" "deployer_artifacts_bucket" {
+  count = module.context.enabled ? 1 : 0
+
+  statement {
+    sid       = "ForceSSLOnlyAccess"
+    effect    = "Deny"
+    actions   = ["s3:*"]
+    resources = [
+      module.deployer_artifacts_bucket.bucket_arn,
+
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["config.amazonaws.com"]
+    }
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+  }
+}
+
 
 # ------------------------------------------------------------------------------
 # Artifact Bucket for use by Deployer Lambda and Pipelines
@@ -45,7 +73,7 @@ module "deployer_artifacts_bucket" {
   s3_replication_enabled        = false
   s3_replication_rules          = null
   s3_replication_source_roles   = []
-  source_policy_documents       = []
+  source_policy_documents       = [concat([one(data.aws_iam_policy_document.deployer_artifacts_bucket[*].json)], var.s3_source_policy_documents)
   sse_algorithm                 = "AES256"
   transfer_acceleration_enabled = false
   user_enabled                  = false
