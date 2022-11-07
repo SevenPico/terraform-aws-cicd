@@ -73,7 +73,7 @@ module "deployer_artifacts_bucket" {
   s3_replication_enabled        = false
   s3_replication_rules          = null
   s3_replication_source_roles   = []
-  source_policy_documents       = [concat([one(data.aws_iam_policy_document.deployer_artifacts_bucket[*].json)], var.s3_source_policy_documents)
+  source_policy_documents       = concat([one(data.aws_iam_policy_document.deployer_artifacts_bucket[*].json)], var.s3_source_policy_documents)
   sse_algorithm                 = "AES256"
   transfer_acceleration_enabled = false
   user_enabled                  = false
