@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "deployer_artifacts_bucket" {
     actions   = ["s3:*"]
     resources = [
       module.deployer_artifacts_bucket.bucket_arn,
-
+      "${module.deployer_artifacts_bucket.bucket_arn}/*"
     ]
 
     principals {
