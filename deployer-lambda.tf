@@ -15,9 +15,9 @@ data "aws_iam_policy_document" "deployer_artifacts_bucket" {
   count = module.context.enabled ? 1 : 0
 
   statement {
-    sid       = "ForceSSLOnlyAccess"
-    effect    = "Deny"
-    actions   = ["s3:*"]
+    sid     = "ForceSSLOnlyAccess"
+    effect  = "Deny"
+    actions = ["s3:*"]
     resources = [
       module.deployer_artifacts_bucket.bucket_arn,
       "${module.deployer_artifacts_bucket.bucket_arn}/*"
@@ -218,9 +218,11 @@ module "deployer_lambda_policy" {
       ]
     }
     KmsSsmDecrypt = {
-      effect    = "Allow"
-      actions   = ["kms:Decrypt", "kms:DescribeKey"]
-      resources = [module.kms_key.key_arn]
+      effect  = var.create_kms_key ? "Allow" : "Deny"
+      actions = ["kms:Decrypt", "kms:DescribeKey"]
+      resources = [
+        var.create_kms_key ? module.kms_key.key_arn : "*"
+      ]
     }
     S3PutArtifact = {
       effect  = "Allow"
