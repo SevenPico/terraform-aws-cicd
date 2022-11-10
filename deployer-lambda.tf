@@ -15,17 +15,17 @@ data "aws_iam_policy_document" "deployer_artifacts_bucket" {
   count = module.context.enabled ? 1 : 0
 
   statement {
-    sid       = "ForceSSLOnlyAccess"
-    effect    = "Deny"
-    actions   = ["s3:*"]
+    sid     = "ForceSSLOnlyAccess"
+    effect  = "Deny"
+    actions = ["s3:*"]
     resources = [
       module.deployer_artifacts_bucket.bucket_arn,
       "${module.deployer_artifacts_bucket.bucket_arn}/*"
     ]
 
     principals {
-      type        = "Service"
-      identifiers = ["config.amazonaws.com"]
+      identifiers = ["*"]
+      type        = "*"
     }
 
     condition {
