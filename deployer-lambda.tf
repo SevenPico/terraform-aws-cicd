@@ -24,8 +24,8 @@ data "aws_iam_policy_document" "deployer_artifacts_bucket" {
     ]
 
     principals {
-      type        = "Service"
-      identifiers = ["config.amazonaws.com"]
+      identifiers = ["*"]
+      type        = "*"
     }
 
     condition {
