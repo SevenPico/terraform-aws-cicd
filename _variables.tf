@@ -112,7 +112,7 @@ variable "allow_encrypted_uploads_only" {
 
 variable "allow_ssl_requests_only" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "s3_source_policy_documents" {
