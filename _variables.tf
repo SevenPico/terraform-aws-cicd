@@ -105,6 +105,16 @@ variable "access_log_bucket_prefix_override" {
   description = "Prefix to prepend to the current S3 bucket name, where S3 access logs will be sent to"
 }
 
+variable "allow_encrypted_uploads_only" {
+  type    = bool
+  default = false
+}
+
+variable "allow_ssl_requests_only" {
+  type    = bool
+  default = false
+}
+
 variable "s3_source_policy_documents" {
   type        = list(string)
   default     = []
