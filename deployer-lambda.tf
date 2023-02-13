@@ -23,8 +23,8 @@
 # Deployer Lambda Context
 # ------------------------------------------------------------------------------
 module "deployer_context" {
-  source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.1.0"
+  source     = "SevenPico/context/null"
+  version    = "2.0.0"
   context    = module.context.self
   attributes = ["deployer"]
 }
@@ -34,8 +34,8 @@ module "deployer_context" {
 # Artifact Bucket for use by Deployer Lambda and Pipelines
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
-  source     = "app.terraform.io/SevenPico/s3-bucket/aws"
-  version    = "3.1.8"
+  source     = "SevenPicoForks/s3-bucket/aws"
+  version    = "4.0.1"
   context    = module.deployer_context.self
   attributes = ["artifacts"]
 
@@ -89,8 +89,8 @@ module "deployer_artifacts_bucket" {
 # Deployer Lambda
 # ------------------------------------------------------------------------------
 module "deployer_lambda" {
-  source     = "app.terraform.io/SevenPico/lambda-function/aws"
-  version    = "1.0.0"
+  source     = "SevenPicoForks/lambda-function/aws"
+  version    = "2.0.0"
   context    = module.deployer_context.self
   attributes = ["lambda"]
 
@@ -187,8 +187,8 @@ resource "aws_iam_role_policy_attachment" "deployer_lambda" {
 }
 
 module "deployer_lambda_policy" {
-  source  = "app.terraform.io/SevenPico/iam-policy/aws"
-  version = "1.0.0"
+  source  = "SevenPicoForks/iam-policy/aws"
+  version = "2.0.0"
   context = module.deployer_context.self
 
   description                   = "Deployer Lambda Access Policy"

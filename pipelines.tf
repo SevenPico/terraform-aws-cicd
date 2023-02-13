@@ -103,8 +103,8 @@ resource "aws_ssm_parameter" "target_source" {
 # KMS Key
 # ------------------------------------------------------------------------------
 module "kms_key" {
-  source  = "app.terraform.io/SevenPico/kms-key/aws"
-  version = "0.12.1.2"
+  source  = "SevenPicoForks/kms-key/aws"
+  version = "2.0.0"
   context = module.context.self
   enabled = module.context.enabled && var.create_kms_key
 
@@ -121,8 +121,8 @@ module "kms_key" {
 # Lambda Event Trigger on Target Source Change
 # ------------------------------------------------------------------------------
 module "ssm_target_source_update_event" {
-  source     = "app.terraform.io/SevenPico/events/aws//cloudwatch-event"
-  version    = "0.0.2"
+  source     = "SevenPico/events/aws//cloudwatch-event"
+  version    = "1.0.0"
   context    = module.context.self
   attributes = ["target-source-update"]
 

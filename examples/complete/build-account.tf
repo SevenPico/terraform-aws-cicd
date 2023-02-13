@@ -20,8 +20,8 @@
 ## ----------------------------------------------------------------------------
 
 module "artifact_bucket" {
-  source     = "app.terraform.io/SevenPico/s3-bucket/aws"
-  version    = "3.0.0"
+  source     = "SevenPicoForks/s3-bucket/aws"
+  version    = "4.0.1"
   context    = module.context.self
   attributes = ["artifacts"]
 }

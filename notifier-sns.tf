@@ -23,8 +23,8 @@
 # Artifact Update SNS Topic
 # ------------------------------------------------------------------------------
 module "notifier_sns" {
-  source  = "app.terraform.io/SevenPico/sns/aws"
-  version = "1.0.0"
+  source  = "SevenPico/sns/aws"
+  version = "2.0.0"
   context = module.context.self
 
   kms_master_key_id = ""
@@ -37,8 +37,8 @@ module "notifier_sns" {
 # CodePipeline Event Rule
 # ------------------------------------------------------------------------------
 module "codepipeline_event" {
-  source  = "app.terraform.io/SevenPico/events/aws//cloudwatch-event"
-  version = "0.0.1"
+  source  = "SevenPico/events/aws//cloudwatch-event"
+  version = "1.0.0"
   context = module.context.self
 
   description = "CodePipeline Events"

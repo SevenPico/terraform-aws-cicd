@@ -1,5 +1,6 @@
 ## ----------------------------------------------------------------------------
 ##  Copyright 2023 SevenPico, Inc.
+##  Copyright 2020-2022 Cloud Posse, LLC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -15,8 +16,8 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./examples/complete/_context.tf
-##  This file contains code written by SevenPico, Inc.
+##  ./_context.tf
+##  This file contains code modified by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
 #
@@ -42,8 +43,8 @@
 #
 
 module "context" {
-  source  = "app.terraform.io/SevenPico/context/null"
-  version = "1.0.2" # requires Terraform >= 0.13.0
+  source  = "SevenPico/context/null"
+  version = "2.0.0" # requires Terraform >= 0.13.0
 
   enabled             = var.enabled
   namespace           = var.namespace

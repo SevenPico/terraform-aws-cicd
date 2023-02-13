@@ -23,8 +23,8 @@
 # Notifier Lambda Context
 # ------------------------------------------------------------------------------
 module "notifier_context" {
-  source     = "app.terraform.io/SevenPico/context/null"
-  version    = "1.1.0"
+  source     = "SevenPico/context/null"
+  version    = "2.0.0"
   context    = module.context.self
   enabled    = module.context.enabled && var.slack_notifications_enabled
   attributes = ["notifier"]
@@ -35,8 +35,8 @@ module "notifier_context" {
 # Notifier Lambda
 # ------------------------------------------------------------------------------
 module "notifier_lambda" {
-  source     = "app.terraform.io/SevenPico/lambda-function/aws"
-  version    = "1.0.0"
+  source     = "SevenPicoForks/lambda-function/aws"
+  version    = "2.0.0"
   context    = module.notifier_context.self
   attributes = ["lambda"]
 
@@ -124,8 +124,8 @@ resource "aws_iam_role_policy_attachment" "notifier_lambda" {
 }
 
 module "notifier_lambda_policy" {
-  source  = "app.terraform.io/SevenPico/iam-policy/aws"
-  version = "1.0.0"
+  source  = "SevenPicoForks/iam-policy/aws"
+  version = "2.0.0"
   context = module.notifier_context.self
 
   description                   = "Notifier Lambda Access Policy"

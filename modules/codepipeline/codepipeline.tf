@@ -73,8 +73,8 @@ resource "aws_codepipeline" "this" {
 # IAM Role
 # ------------------------------------------------------------------------------
 module "codepipeline_iam_role" {
-  source     = "app.terraform.io/SevenPico/iam-role/aws"
-  version    = "1.0.0"
+  source     = "SevenPicoForks/iam-role/aws"
+  version    = "2.0.0"
   context    = module.context.self
   attributes = ["role"]
 
@@ -97,8 +97,8 @@ module "codepipeline_iam_role" {
 }
 
 module "codepipeline_iam_policy" {
-  source     = "app.terraform.io/SevenPico/iam-policy/aws"
-  version    = "1.0.0"
+  source     = "SevenPicoForks/iam-policy/aws"
+  version    = "2.0.0"
   context    = module.context.self
   attributes = ["policy"]
 
