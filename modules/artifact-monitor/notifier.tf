@@ -37,7 +37,7 @@ module "notifier_context" {
 module "notifier_lambda" {
   source     = "SevenPicoForks/lambda-function/aws"
   version    = "2.0.0"
-  context    = module.notifier_context.legacy
+  context    = module.notifier_context.context
   attributes = ["lambda"]
 
   architectures                       = null
@@ -123,9 +123,9 @@ resource "aws_iam_role_policy_attachment" "notifier_lambda" {
 }
 
 module "notifier_lambda_policy" {
-  source  = "cloudposse/iam-policy/aws"
-  version = "0.4.0"
-  context = module.notifier_context.legacy
+  source  = "SevenPicoForks/iam-policy/aws"
+  version = "2.0.0"
+  context = module.notifier_context.self
 
   description                   = "Notifier Lambda Access Policy"
   iam_override_policy_documents = null
