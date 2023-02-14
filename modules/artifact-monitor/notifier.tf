@@ -37,7 +37,7 @@ module "notifier_context" {
 module "notifier_lambda" {
   source     = "SevenPicoForks/lambda-function/aws"
   version    = "2.0.0"
-  context    = module.notifier_context.context
+  context    = module.notifier_context.self
   attributes = ["lambda"]
 
   architectures                       = null
