@@ -24,7 +24,7 @@
 # ------------------------------------------------------------------------------
 module "sns_topic" {
   source  = "SevenPico/sns/aws"
-  version = "2.0.1"
+  version = "2.0.2"
   context = module.context.self
 
   kms_master_key_id = ""
