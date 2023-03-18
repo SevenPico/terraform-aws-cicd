@@ -47,9 +47,9 @@ output "s3_pipelines_names_map" {
   value = { for k,v in module.s3_pipeline: k => v.id }
 }
 
-output "ecs_target_version_ssm_parameters_map" {
-  value = local.ecs_target_version_ssm_parameters_map
+output "ecs_target_version_ssm_parameter_names_map" {
+  value = local.ecs_target_version_ssm_parameter_names_map
 }
-output "s3_target_version_ssm_parameters_map" {
-  value = local.s3_target_version_ssm_parameters_map
+output "s3_target_version_ssm_parameter_names_map" {
+  value = local.s3_target_version_ssm_parameter_names_map
 }

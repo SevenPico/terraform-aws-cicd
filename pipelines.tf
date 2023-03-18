@@ -28,8 +28,8 @@ locals {
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
   )
 
-  ecs_target_version_ssm_parameters_map = { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"] }
-  s3_target_version_ssm_parameters_map= { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"] }
+  ecs_target_version_ssm_parameter_names_map = { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name }
+  s3_target_version_ssm_parameter_names_map= { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name }
 }
 
 
