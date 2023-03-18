@@ -38,3 +38,18 @@ output "kms_key_alias_name" {
   value       = module.kms_key.alias_name
   description = "Alias name"
 }
+
+output "ecs_pipelines_map" {
+  value = module.ecs_pipeline
+}
+
+output "s3_pipelines_map" {
+  value = module.s3_pipeline
+}
+
+output "ecs_target_version_ssm_parameters_map" {
+  value = local.ecs_target_version_ssm_parameters_map
+}
+output "s3_target_version_ssm_parameters_map" {
+  value = local.s3_target_version_ssm_parameters_map
+}
