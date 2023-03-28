@@ -39,7 +39,7 @@ module "deployer_artifacts_bucket" {
   context    = module.deployer_context.self
   attributes = ["artifacts"]
 
-  acl                           = "private"
+  acl                           = var.s3_acl
   allow_encrypted_uploads_only  = var.allow_encrypted_uploads_only
   allow_ssl_requests_only       = var.allow_ssl_requests_only
   block_public_acls             = true
