@@ -84,12 +84,6 @@ module "deployer_artifacts_bucket" {
   ]
 }
 
-
-resource "aws_s3_bucket_acl" "bucket-acl"{
-  bucket = module.deployer_artifacts_bucket.bucket_id
-  acl    = var.s3_acl
-}
-
 # ------------------------------------------------------------------------------
 # Deployer Lambda
 # ------------------------------------------------------------------------------
