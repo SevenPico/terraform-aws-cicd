@@ -34,7 +34,7 @@
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 locals {
-  account_id = try(data.aws_caller_identity.current[*].account_id, "")
+  account_id = try(data.aws_caller_identity.current[0].account_id, "")
 }
 
 # The AWS region currently being used.
