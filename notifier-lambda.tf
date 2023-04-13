@@ -48,7 +48,7 @@ module "notifier_lambda" {
   cloudwatch_log_subscription_filters = {}
   description                         = "Notify on Pipeline Events."
   event_source_mappings               = {}
-  filename                            = data.archive_file.notifier_lambda[0].output_path
+  filename                            = try(data.archive_file.notifier_lambda[0].output_path, "")
   function_name                       = module.notifier_context.id
   handler                             = "main.lambda_handler"
   ignore_external_function_updates    = false
@@ -67,7 +67,7 @@ module "notifier_lambda" {
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.notifier_lambda[0].output_base64sha256
+  source_code_hash                    = try(data.archive_file.notifier_lambda[0].output_base64sha256, "")
   ssm_parameter_names                 = null
   timeout                             = 60
   tracing_config_mode                 = null

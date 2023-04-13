@@ -55,7 +55,7 @@ module "deployer_artifacts_bucket" {
   lifecycle_configuration_rules = []
   logging = var.access_log_bucket_name != null && var.access_log_bucket_name != "" ? {
     bucket_name = var.access_log_bucket_name
-    prefix      = var.access_log_bucket_prefix_override == null ? "${join("", data.aws_caller_identity.current[*].account_id)}/${module.context.id}/" : (var.access_log_bucket_prefix_override != "" ? "${var.access_log_bucket_prefix_override}/" : "")
+    prefix      = var.access_log_bucket_prefix_override == null ? "${local.account_id}/${module.context.id}/" : (var.access_log_bucket_prefix_override != "" ? "${var.access_log_bucket_prefix_override}/" : "")
   } : null
   object_lock_configuration     = null
   privileged_principal_actions  = []
@@ -102,7 +102,7 @@ module "deployer_lambda" {
   cloudwatch_log_subscription_filters = {}
   description                         = "Trigger Deployment Pipelines on Artifact Update Notification."
   event_source_mappings               = {}
-  filename                            = data.archive_file.deployer_lambda[0].output_path
+  filename                            = try(data.archive_file.deployer_lambda[0].output_path, "")
   function_name                       = module.deployer_context.id
   handler                             = "main.lambda_handler"
   ignore_external_function_updates    = false
@@ -121,7 +121,7 @@ module "deployer_lambda" {
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.deployer_lambda[0].output_base64sha256
+  source_code_hash                    = try(data.archive_file.deployer_lambda[0].output_base64sha256, "")
   ssm_parameter_names                 = null
   timeout                             = 60
   tracing_config_mode                 = null
