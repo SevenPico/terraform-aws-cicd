@@ -42,7 +42,7 @@ module "deployer_artifacts_bucket" {
   acl                           = var.s3_acl
   allow_encrypted_uploads_only  = var.allow_encrypted_uploads_only
   allow_ssl_requests_only       = var.allow_ssl_requests_only
-  block_public_acls             = false #true
+  block_public_acls             = true
   block_public_policy           = true
   bucket_key_enabled            = false
   bucket_name                   = null
