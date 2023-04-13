@@ -48,7 +48,7 @@ module "deployer_artifacts_bucket" {
   bucket_name                   = null
   cors_rule_inputs              = null
   enable_mfa_delete             = var.enable_mfa_delete
-  force_destroy                 = true ## no unique data stored here
+  force_destroy                 = true # no unique data stored here
   grants                        = []
   ignore_public_acls            = true
   kms_master_key_arn            = ""
