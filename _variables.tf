@@ -52,6 +52,16 @@ variable "cloudwatch_log_expiration_days" {
   default = 90
 }
 
+variable "source_s3_bucket_id"{
+  type = string
+  default = ""
+}
+
+variable "source_s3_object_key"{
+  type = string
+  default = ""
+}
+
 variable "ecs_deployment_timeout" {
   type    = string
   default = 15

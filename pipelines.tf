@@ -67,8 +67,9 @@ module "s3_pipeline" {
   artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
-  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key           = "${module.context.id}/s3/${each.key}.zip"
+#  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
+  source_s3_bucket_id            = var.source_s3_bucket_id != "" ? var.source_s3_bucket_id : module.deployer_artifacts_bucket.bucket_id
+  source_s3_object_key           = var.source_s3_object_key != "" ? var.source_s3_object_key : "${module.context.id}/s3/${each.key}.zip"
   target_s3_bucket_id            = each.value.target_s3_bucket_id
 
   pre_deploy_enabled               = (each.value.pre_deploy != null)
