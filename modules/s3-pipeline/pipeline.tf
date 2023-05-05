@@ -39,7 +39,7 @@ module "pipeline" {
       {
         name = "source"
         actions = {
-          s3-soruce = {
+          s3-source = {
             category = "Source"
             owner    = "AWS"
             provider = "S3"
