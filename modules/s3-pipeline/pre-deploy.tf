@@ -66,7 +66,7 @@ module "pre_deploy_codebuild" {
   aws_region                            = ""
   badge_enabled                         = false
   build_compute_type                    = "BUILD_GENERAL1_SMALL"
-  build_image                           = "aws/codebuild/standard:2.0"
+  build_image                           = "ghcr.io/cirruslabs/flutter:3.7.12" #"aws/codebuild/standard:2.0"
   build_image_pull_credentials_type     = "CODEBUILD"
   build_timeout                         = 10
   build_type                            = "LINUX_CONTAINER"
