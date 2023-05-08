@@ -57,6 +57,7 @@ module "pre_deploy_codebuild" {
   context    = module.context.legacy #FIXME The underlined names are getting named wrong. The label_order needs to be overwritten.
   enabled    = module.context.enabled && var.pre_deploy_enabled
   attributes = ["pre-deploy"]
+  label_order = ["namespace", "environment", "stage", "name", "attributes"]
 
   access_log_bucket_name                = ""
   artifact_location                     = ""
