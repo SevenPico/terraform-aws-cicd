@@ -29,7 +29,7 @@ locals {
   )
 
   ecs_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
-  s3_target_version_ssm_parameter_names_map= module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
+  s3_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
 }
 
 
@@ -73,7 +73,7 @@ module "s3_pipeline" {
 
   pre_deploy_enabled               = (each.value.pre_deploy != null)
   pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
-  pre_deploy_extra_permissions     = try(each.value.pre_deploy.permissions, [])
+  pre_deploy_policy_docs           = try(each.value.pre_deploy.policy_docs, [])
   pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
 }
 

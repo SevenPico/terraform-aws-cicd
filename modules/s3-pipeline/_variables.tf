@@ -65,7 +65,7 @@ variable "pre_deploy_environment_variables" {
     }
   ]
 }
-variable "pre_deploy_extra_permissions" {
+variable "pre_deploy_policy_docs" {
   type    = list(string)
   default = []
 }

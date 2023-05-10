@@ -52,12 +52,11 @@
 # Codebuild Project
 # -----------------------------------------------------------------------------
 module "pre_deploy_codebuild" {
-  source     = "cloudposse/codebuild/aws"
-  version    = "1.0.0"
-  context    = module.context.legacy #FIXME The underlined names are getting named wrong. The label_order needs to be overwritten.
+  source     = "registry.terraform.io/SevenPico/codebuild/aws"
+  version    = "2.0.0"
+  context    = module.context.legacy
   enabled    = module.context.enabled && var.pre_deploy_enabled
   attributes = ["pre-deploy"]
-  label_order = ["namespace", "environment", "stage", "name", "attributes"]
 
   access_log_bucket_name                = ""
   artifact_location                     = ""
@@ -74,12 +73,12 @@ module "pre_deploy_codebuild" {
   cache_bucket_suffix_enabled           = true
   cache_expiration_days                 = 7
   cache_type                            = "NO_CACHE"
+  codebuild_policy_documents            = var.pre_deploy_policy_docs
   concurrent_build_limit                = null
   description                           = "Allows for changes to artifact files before deployment to the target bucket"
   encryption_enabled                    = false
   encryption_key                        = null
   environment_variables                 = var.pre_deploy_environment_variables
-  extra_permissions                     = var.pre_deploy_extra_permissions
   fetch_git_submodules                  = false
   file_system_locations                 = {}
   git_clone_depth                       = null
