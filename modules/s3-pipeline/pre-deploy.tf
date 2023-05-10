@@ -54,7 +54,7 @@
 module "pre_deploy_codebuild" {
   source     = "registry.terraform.io/SevenPico/codebuild/aws"
   version    = "2.0.0"
-  context    = module.context.legacy
+  context    = module.context.self
   enabled    = module.context.enabled && var.pre_deploy_enabled
   attributes = ["pre-deploy"]
 
