@@ -14,7 +14,7 @@ module "deployer_context" {
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
   source     = "app.terraform.io/SevenPico/s3-bucket/aws"
-  version    = "3.1.8"
+  version    = "4.0.4"
   context    = module.deployer_context.self
   attributes = ["artifacts"]
 
