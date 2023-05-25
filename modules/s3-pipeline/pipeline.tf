@@ -39,7 +39,7 @@ module "pipeline" {
       {
         name = "source"
         actions = {
-          s3-soruce = {
+          s3-source = {
             category = "Source"
             owner    = "AWS"
             provider = "S3"
@@ -66,7 +66,7 @@ module "pipeline" {
             version  = "1"
 
             input_artifacts  = ["source"]
-            output_artifacts = []
+            output_artifacts = ["pre-deploy"]
 
             configuration = {
               ProjectName = module.pre_deploy_codebuild.project_name
@@ -84,7 +84,7 @@ module "pipeline" {
             provider = "S3"
             version  = "1"
 
-            input_artifacts  = ["source"]
+            input_artifacts  = ["pre-deploy"]
             output_artifacts = []
 
             configuration = {

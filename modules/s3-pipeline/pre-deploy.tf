@@ -52,11 +52,11 @@
 # Codebuild Project
 # -----------------------------------------------------------------------------
 module "pre_deploy_codebuild" {
-  source     = "cloudposse/codebuild/aws"
-  version    = "1.0.0"
-  context    = module.context.legacy
+  source     = "registry.terraform.io/SevenPico/codebuild/aws"
+  version    = "2.0.0"
+  context    = module.context.self
   enabled    = module.context.enabled && var.pre_deploy_enabled
-  attributes = ["pre_deploy"]
+  attributes = ["pre-deploy"]
 
   access_log_bucket_name                = ""
   artifact_location                     = ""
@@ -65,7 +65,7 @@ module "pre_deploy_codebuild" {
   aws_region                            = ""
   badge_enabled                         = false
   build_compute_type                    = "BUILD_GENERAL1_SMALL"
-  build_image                           = "aws/codebuild/standard:2.0"
+  build_image                           = var.build_image
   build_image_pull_credentials_type     = "CODEBUILD"
   build_timeout                         = 10
   build_type                            = "LINUX_CONTAINER"
@@ -73,12 +73,12 @@ module "pre_deploy_codebuild" {
   cache_bucket_suffix_enabled           = true
   cache_expiration_days                 = 7
   cache_type                            = "NO_CACHE"
+  codebuild_policy_documents            = var.pre_deploy_policy_docs
   concurrent_build_limit                = null
   description                           = "Allows for changes to artifact files before deployment to the target bucket"
   encryption_enabled                    = false
   encryption_key                        = null
   environment_variables                 = var.pre_deploy_environment_variables
-  extra_permissions                     = var.pre_deploy_extra_permissions
   fetch_git_submodules                  = false
   file_system_locations                 = {}
   git_clone_depth                       = null
