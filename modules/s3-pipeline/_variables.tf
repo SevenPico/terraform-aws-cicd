@@ -74,3 +74,8 @@ variable "cloudwatch_log_expiration_days" {
   type    = string
   default = 90
 }
+
+variable "build_image" {
+  type        = string
+  description = "Build Image required for building the codebuild project. A supported image is the latest major version of an image available in CodeBuild and is updated with minor and patch version updates. CodeBuild optimizes the provisioning duration of builds with supported images by caching them in the machine's Amazon Machine Images (AMI)."
+}
