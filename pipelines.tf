@@ -75,6 +75,7 @@ module "s3_pipeline" {
   pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
   pre_deploy_policy_docs           = try(each.value.pre_deploy.policy_docs, [])
   pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
+  build_image                      = var.build_image
 }
 
 
