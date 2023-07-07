@@ -14,16 +14,6 @@ variable "artifact_store_kms_key_arn" {
   type = string
 }
 
-variable "pre_deploy_enabled" {
-  type    = bool
-  default = false
-}
-
-variable "pre_deploy_buildspec" {
-  type    = string
-  default = "deployspec.yml"
-}
-
 variable "pre_deploy_environment_variables" {
   type = list(object({
     name  = string
@@ -39,10 +29,6 @@ variable "pre_deploy_environment_variables" {
       type  = "PLAINTEXT"
     }
   ]
-}
-variable "pre_deploy_extra_permissions" {
-  type    = list(string)
-  default = []
 }
 
 variable "cloudwatch_log_expiration_days" {
