@@ -47,6 +47,15 @@ variable "s3_targets" {
   default = {}
 }
 
+variable "cf_targets" {
+  type = map(object({
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    stack_name        = string
+  }))
+  default = {}
+}
+
 variable "cloudwatch_log_expiration_days" {
   type    = string
   default = 90
