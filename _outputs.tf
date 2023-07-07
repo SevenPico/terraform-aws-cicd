@@ -40,11 +40,11 @@ output "kms_key_alias_name" {
 }
 
 output "ecs_pipelines_names_map" {
-  value = { for k,v in module.ecs_pipeline: k => v.id }
+  value = { for k, v in module.ecs_pipeline : k => v.id }
 }
 
 output "s3_pipelines_names_map" {
-  value = { for k,v in module.s3_pipeline: k => v.id }
+  value = { for k, v in module.s3_pipeline : k => v.id }
 }
 
 output "ecs_target_version_ssm_parameter_names_map" {

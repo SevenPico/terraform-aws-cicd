@@ -3,9 +3,9 @@ module "pipeline" {
   context = module.context.self
 
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
-  artifact_store_kms_key_arn      = var.artifact_store_kms_key_arn
+  artifact_store_kms_key_arn     = var.artifact_store_kms_key_arn
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-  iam_policy_statements = {}
+  iam_policy_statements          = {}
 
   stages = [
     for stage in [
@@ -41,14 +41,14 @@ module "pipeline" {
             output_artifacts = []
 
             configuration = {
-              ActionMode = "CHANGE_SET_EXECUTE"
-              Capabilities = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-              ChangeSetName = "Cloudformation-Stack-Changes"
-              ParameterOverrides = ""
-              RoleArn = ""
-              StackName= var.cf_stack_name,
-              TemplateConfiguration= "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
-              TemplatePath= "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
+              ActionMode            = "CHANGE_SET_EXECUTE"
+              Capabilities          = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+              ChangeSetName         = "Cloudformation-Stack-Changes"
+              ParameterOverrides    = ""
+              RoleArn               = ""
+              StackName             = var.cf_stack_name,
+              TemplateConfiguration = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
+              TemplatePath          = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
             }
           }
         }

@@ -111,10 +111,10 @@ variable "slack_channel_ids" {
 }
 
 variable "slack_token_secret_arn" {
-  type = string
+  type    = string
   default = ""
 }
 variable "slack_token_secret_kms_key_arn" {
-  type = string
+  type    = string
   default = ""
 }
