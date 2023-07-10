@@ -10,12 +10,13 @@ import config
 config = config.Config()
 session = boto3.Session()
 
+
 def lambda_handler(event, context):
     print(f'Lambda Input Event: {event}')
     print(f'Lambda Input Context: {context}')
 
     try:
-        e = json.loads(event['Records'][0]['Sns']['Message']) # handle sns trigger
+        e = json.loads(event['Records'][0]['Sns']['Message'])  # handle sns trigger
     except:
         e = event
 
@@ -34,7 +35,7 @@ def trigger_by_name(name):
         if name != target_name:
             continue
 
-        type = target_name.split('/')[-2] # {id}/{type}/{name}
+        type = target_name.split('/')[-2]  # {id}/{type}/{name}
 
         if type == 'ecs':
             trigger_ecs_pipeline(target_name, source_uri)
@@ -55,14 +56,15 @@ def chunk_list(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
+
 def get_target_source_map():
     ssm = session.client('ssm')
 
     target_source_map = {}
 
-    N = 10 # get_parameters needs to be called in batches <= 10
+    N = 10  # get_parameters needs to be called in batches <= 10
     for chunk in chunk_list(config.target_names, N):
-        response = ssm.get_parameters(Names = [f'/version/{name}' for name in chunk], WithDecryption = True)
+        response = ssm.get_parameters(Names=[f'/version/{name}' for name in chunk], WithDecryption=True)
 
         for p in response['InvalidParameters']:
             logging.error(f"SSM Parameter '{p}' not found.")
@@ -81,7 +83,7 @@ def trigger_ecs_pipeline(target_name, image_uri):
 
     s3 = boto3.client('s3')
     image_detail = [{
-        'name': target_name.split('/')[-1], # {id}/{type}/{name}
+        'name': target_name.split('/')[-1],  # {id}/{type}/{name}
         'imageUri': image_uri
     }]
 
@@ -90,9 +92,9 @@ def trigger_ecs_pipeline(target_name, image_uri):
         zf.writestr('imagedefinitions.json', json.dumps(image_detail).encode('UTF'))
         zf.close()
         s3.put_object(
-            Bucket = config.deployer_artifacts_bucket_id,
-            Key    = f'{target_name}.zip',
-            Body   = zip_file_object.getvalue()
+            Bucket=config.deployer_artifacts_bucket_id,
+            Key=f'{target_name}.zip',
+            Body=zip_file_object.getvalue()
         )
 
 
@@ -103,7 +105,7 @@ def trigger_s3_pipeline(target_name, object_uri):
 
     s3 = session.client('s3')
     s3.copy_object(
-        Bucket     = config.deployer_artifacts_bucket_id,
-        Key        = f'{target_name}{suffix}',
-        CopySource = object_uri,
+        Bucket=config.deployer_artifacts_bucket_id,
+        Key=f'{target_name}{suffix}',
+        CopySource=object_uri,
     )

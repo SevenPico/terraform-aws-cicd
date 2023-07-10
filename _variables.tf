@@ -51,7 +51,7 @@ variable "cf_targets" {
   type = map(object({
     source_s3_bucket_id  = string
     source_s3_object_key = string
-    stack_name           = string
+    cf_stack_name           = string
   }))
   default = {}
 }
