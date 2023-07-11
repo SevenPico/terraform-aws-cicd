@@ -50,6 +50,7 @@ variable "s3_targets" {
 variable "cloudformation_targets" {
   type = map(object({
     stack_name = string
+    stack_url  = string
   }))
   default = {}
 }
