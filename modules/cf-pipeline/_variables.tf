@@ -36,7 +36,7 @@ variable "cloudwatch_log_expiration_days" {
   default = 90
 }
 
-variable "cf_stack_name" {
+variable "cloudformation_stack_name" {
   type    = string
   default = ""
 }

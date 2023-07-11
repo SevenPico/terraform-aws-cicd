@@ -8,50 +8,48 @@ module "pipeline" {
   iam_policy_statements          = {}
 
   stages = [
-    for stage in [
-      {
-        name = "source"
-        actions = {
-          cf-source = {
-            category = "Source"
-            owner    = "AWS"
-            provider = "S3"
-            version  = "1"
+    {
+      name = "source"
+      actions = {
+        cf-source = {
+          category = "Source"
+          owner    = "AWS"
+          provider = "S3"
+          version  = "1"
 
-            input_artifacts  = []
-            output_artifacts = ["source"]
+          input_artifacts  = []
+          output_artifacts = ["source"]
 
-            configuration = {
-              S3Bucket    = var.source_s3_bucket_id
-              S3ObjectKey = var.source_s3_object_key
-            }
+          configuration = {
+            S3Bucket    = var.source_s3_bucket_id
+            S3ObjectKey = var.source_s3_object_key
           }
         }
-      },
-      {
-        name = "deploy"
-        actions = {
-          cf-deploy = {
-            category = "Deploy"
-            owner    = "AWS"
-            provider = "CloudFormation"
-            version  = "1"
+      }
+    },
+    {
+      name = "deploy"
+      actions = {
+        cf-deploy = {
+          category = "Deploy"
+          owner    = "AWS"
+          provider = "CloudFormation"
+          version  = "1"
 
-            input_artifacts  = ["source"]
-            output_artifacts = []
+          input_artifacts  = ["source"]
+          output_artifacts = []
 
-            configuration = {
-              ActionMode            = "CREATE_UPDATE"
-              Capabilities          = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-              ChangeSetName         = "Cloudformation-Stack-Changes"
-              ParameterOverrides    = ""
-              RoleArn               = ""
-              StackName             = var.cf_stack_name,
-              TemplateConfiguration = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
-              TemplatePath          = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
-            }
+          configuration = {
+            ActionMode         = "CREATE_UPDATE"
+            Capabilities       = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+            ChangeSetName      = "Cloudformation-Stack-Changes"
+            ParameterOverrides = ""
+            RoleArn            = ""
+            StackName          = var.cloudformation_stack_name
+            TemplatePath       = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
           }
         }
-      },
-  ] : stage if stage != null]
+      }
+    },
+  ]
 }
