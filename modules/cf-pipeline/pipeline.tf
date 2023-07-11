@@ -43,8 +43,6 @@ module "pipeline" {
             ActionMode         = "CREATE_UPDATE"
             Capabilities       = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
             ChangeSetName      = "Cloudformation-Stack-Changes"
-            ParameterOverrides = ""
-            RoleArn            = ""
             StackName          = var.cloudformation_stack_name
             TemplatePath       = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
           }
