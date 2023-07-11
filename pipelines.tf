@@ -26,7 +26,7 @@ locals {
   targets = merge(
     { for k, v in var.ecs_targets : "${module.context.id}/ecs/${k}" => v.image_uri },
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
-    { for k, v in var.cf_targets : "${module.context.id}/cf/${k}" => v.cf_stack_name }
+    { for k, v in var.cf_targets : "${module.context.id}/cf/${k}" => v.cf_targets }
   )
 
   ecs_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
@@ -96,7 +96,7 @@ module "cf_pipeline" {
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
   source_s3_object_key           = "${module.context.id}/cf/${each.key}.json"
-  cf_stack_name                  = each.value.stack_name
+  cf_stack_name                  = each.key
 }
 
 

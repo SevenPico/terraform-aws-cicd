@@ -48,12 +48,8 @@ variable "s3_targets" {
 }
 
 variable "cf_targets" {
-  type = map(object({
-    source_s3_bucket_id  = string
-    source_s3_object_key = string
-    cf_stack_name           = string
-  }))
-  default = {}
+  type = list(string)
+  default = []
 }
 
 variable "cloudwatch_log_expiration_days" {
