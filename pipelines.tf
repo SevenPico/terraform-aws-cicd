@@ -31,7 +31,7 @@ locals {
 
   ecs_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
   s3_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
-  cf_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cf/${k}"].name } : {}
+  cf_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cloudformation/${k}"].name } : {}
 }
 
 
