@@ -47,12 +47,12 @@ variable "s3_targets" {
   default = {}
 }
 
-#variable "cloudformation_targets" {
-#  type = map(object({
-#    stack_name = string
-#  }))
-#  default = {}
-#}
+variable "cloudformation_targets" {
+  type = map(object({
+    stack_name = string
+  }))
+  default = {}
+}
 
 variable "cloudwatch_log_expiration_days" {
   type    = string

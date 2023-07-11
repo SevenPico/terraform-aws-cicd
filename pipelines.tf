@@ -26,11 +26,12 @@ locals {
   targets = merge(
     { for k, v in var.ecs_targets : "${module.context.id}/ecs/${k}" => v.image_uri },
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
+    { for k, v in var.cloudformation_targets : "${module.context.id}/cloudformation/${k}" => v.stack_name },
   )
 
   ecs_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
   s3_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
-#  cf_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cf/${k}"].name } : {}
+  cf_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cf/${k}"].name } : {}
 }
 
 
