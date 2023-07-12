@@ -225,10 +225,17 @@ module "deployer_lambda_policy" {
         "${module.deployer_artifacts_bucket.bucket_arn}/*",
       ]
     }
-    S3GetArtifact = {
-      effect    = "Allow"
-      actions   = ["s3:Get*"]
-      resources = ["*"] # FIXME s3_targets.target_s3_bucket_id
+    "S3GetArtifact" = {
+      effect  = "Allow"
+      actions = ["s3:Get*"]
+      resources = concat(
+        [
+          for target in values(var.s3_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+        ],
+        [
+          for target in values(var.cloudformation_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+        ]
+      )
     }
   }
 }

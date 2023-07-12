@@ -50,8 +50,10 @@ variable "s3_targets" {
 
 variable "cloudformation_targets" {
   type = map(object({
-    stack_name = string
-    stack_url  = string
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    stack_name           = string
+    stack_url            = string
   }))
   default = {}
 }
@@ -172,6 +174,6 @@ variable "build_image" {
 }
 
 variable "cloudformation_stack_name" {
-  type = string
+  type    = string
   default = ""
 }
