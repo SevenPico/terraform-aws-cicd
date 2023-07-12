@@ -33,6 +33,7 @@ variable "s3_targets" {
     source_s3_bucket_id  = string
     source_s3_object_key = string
     target_s3_bucket_id  = string
+    ssm_artifact_uri_value = string       #This value will be a URI for the build artifacts .zip file, which will be saved in the ssm parameter store.
     pre_deploy = object({
       buildspec   = string
       policy_docs = list(string)
