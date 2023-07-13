@@ -95,7 +95,7 @@ module "cf_pipeline" {
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key           = "${module.context.id}/cf/${each.key}.json"
+  source_s3_object_key           = "${module.context.id}/cloudformation/${each.key}.zip"
   cloudformation_stack_name      = each.value.stack_name
 }
 

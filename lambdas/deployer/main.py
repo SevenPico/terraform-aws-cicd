@@ -132,7 +132,7 @@ def trigger_cf_pipeline(target_name, object_uri, event, context):
             s3.upload_fileobj(
                 Fileobj=z.open(filename),
                 Bucket=bucket,
-                Key=f'{target_name}{suffix}',
+                Key=filename,
             )
     except Exception as e:
         print('Error getting object {zip_key} from bucket {bucket}.')
