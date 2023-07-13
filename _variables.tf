@@ -53,7 +53,6 @@ variable "cloudformation_targets" {
     source_s3_bucket_id  = string
     source_s3_object_key = string
     stack_name           = string
-    stack_url            = string
   }))
   default = {}
 }
