@@ -3,6 +3,8 @@ import json
 import logging
 import pathlib
 import zipfile
+import urllib.parse
+from mimetypes import guess_type
 from io import BytesIO
 
 import config
@@ -113,14 +115,25 @@ def trigger_s3_pipeline(target_name, object_uri):
     )
 
 
-def trigger_cf_pipeline(target_name, object_uri):
+def trigger_cf_pipeline(target_name, object_uri, event, context):
     print(f"Triggering '{target_name}' Cloudformation pipeline with {object_uri}")
-
-    suffix = pathlib.Path(object_uri).suffix
-
     s3 = session.client('s3')
-    s3.copy_object(
-        Bucket=config.deployer_artifacts_bucket_id,
-        Key=f'{target_name}{suffix}',
-        CopySource=object_uri,
-    )
+    suffix = pathlib.Path(object_uri).suffix
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+
+    try:
+        # Get the zipfile from S3
+        obj = s3.get_object(Bucket=bucket, Key=zip_key)
+        z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
+
+        # Extract and upload each file in the zipfile
+        for filename in z.namelist():
+            s3.upload_fileobj(
+                Fileobj=z.open(filename),
+                Bucket=bucket,
+                Key=f'{target_name}{suffix}',
+            )
+    except Exception as e:
+        print('Error getting object {zip_key} from bucket {bucket}.')
+        raise e
