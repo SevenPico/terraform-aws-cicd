@@ -27,11 +27,13 @@ locals {
     { for k, v in var.ecs_targets : "${module.context.id}/ecs/${k}" => v.image_uri },
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => v.ssm_artifact_uri_value }, #"${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
     { for k, v in var.cloudformation_targets : "${module.context.id}/cloudformation/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}"},
+    { for k, v in var.ec2_targets : "${module.context.id}/ec2/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}"},
   )
 
   ecs_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
   s3_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
   cf_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cloudformation/${k}"].name } : {}
+  ec2_target_version_ssm_parameter_names_map  = module.context.enabled ? { for k, v in var.ec2_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ec2/${k}"].name } : {}
 }
 
 
@@ -97,6 +99,28 @@ module "cf_pipeline" {
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
   source_s3_object_key           = "${module.context.id}/cloudformation/${each.key}.zip"
   cloudformation_stack_name      = each.value.stack_name
+}
+
+
+# ------------------------------------------------------------------------------
+# EC2 Target Pipelines
+# ------------------------------------------------------------------------------
+module "ec2_pipeline" {
+  source  = "./modules/ec2-pipeline"
+  context = module.context.self
+
+  for_each   = var.ec2_targets
+  attributes = ["ec2", each.key]
+
+  artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
+  artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
+  build_environment_variables    = try(each.value.build.env_vars, [])
+  build_image                    = var.build_image
+  build_policy_docs              = try(each.value.build.policy_docs, [])
+  buildspec                      = try(each.value.build.buildspec, "deployspec.yml")
+  cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
+  source_s3_bucket_id            = each.value.source_s3_bucket_id
+  source_s3_object_key           = each.value.source_s3_object_key
 }
 
 

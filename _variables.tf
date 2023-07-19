@@ -57,6 +57,24 @@ variable "cloudformation_targets" {
   default = {}
 }
 
+variable "ec2_targets" {
+  type = map(object({
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    build = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
+  }))
+  default = {}
+}
+
 variable "cloudwatch_log_expiration_days" {
   type    = string
   default = 90
