@@ -3,6 +3,8 @@ import json
 import logging
 import pathlib
 import zipfile
+import tempfile
+import os
 import urllib.parse
 from mimetypes import guess_type
 from io import BytesIO
@@ -115,13 +117,15 @@ def trigger_s3_pipeline(target_name, object_uri):
     )
 
 
-def trigger_cf_pipeline(target_name, object_uri, tempfile=None, os=None):
+def trigger_cf_pipeline(target_name, object_uri):
     print(f"Triggering '{target_name}' Cloudformation pipeline with {object_uri}")
 
-    suffix = pathlib.Path(object_uri).suffix
-
     s3 = session.client('s3')
-    response = s3.get_object(Bucket=object_uri.split('/')[2], Key=object_uri.split('/', 3)[3])
+    bucket_name = object_uri.split('/')[0]
+    object_key = object_uri.split('/', 1)[1]
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+
+    print(f"Bucket: {bucket_name}, Key: {object_key}")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         zip_file_path = f"{tmpdir}/stack.zip"
@@ -139,6 +143,7 @@ def trigger_cf_pipeline(target_name, object_uri, tempfile=None, os=None):
         for root, _, files in os.walk(target_dir):
             for file in files:
                 source_path = os.path.join(root, file)
-                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}{suffix}")
+                target_path = os.path.relpath(source_path, target_dir)
+                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}/{target_path}")
 
     print("Upload complete!")
