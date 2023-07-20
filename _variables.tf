@@ -30,10 +30,10 @@ variable "ecs_targets" {
 
 variable "s3_targets" {
   type = map(object({
-    source_s3_bucket_id  = string
-    source_s3_object_key = string
-    target_s3_bucket_id  = string
-    ssm_artifact_uri_value = string       #This value will be a URI for the build artifacts .zip file, which will be saved in the ssm parameter store.
+    source_s3_bucket_id    = string
+    source_s3_object_key   = string
+    target_s3_bucket_id    = string
+    ssm_artifact_uri_value = string #This value will be a URI for the build artifacts .zip file, which will be saved in the ssm parameter store.
     pre_deploy = object({
       buildspec   = string
       policy_docs = list(string)
@@ -50,6 +50,7 @@ variable "s3_targets" {
 
 variable "cloudformation_targets" {
   type = map(object({
+    role_arn             = string
     source_s3_bucket_id  = string
     source_s3_object_key = string
     stack_name           = string

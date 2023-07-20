@@ -36,9 +36,9 @@ variable "pre_deploy_buildspec" {
 
 variable "pre_deploy_environment_variables" {
   type = list(object({
-      name  = string
-      value = string
-      type  = string
+    name  = string
+    value = string
+    type  = string
     }
   ))
 
@@ -59,5 +59,10 @@ variable "build_image" {
   type        = string
   default     = "aws/codebuild/standard:2.0"
   description = "Docker image for build environment, e.g. 'aws/codebuild/standard:2.0' or 'aws/codebuild/eb-nodejs-6.10.0-amazonlinux-64:4.0.0'. For more info: http://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref.html"
+}
+
+variable "cloudformation_role_arn" {
+  type    = string
+  default = ""
 }
 

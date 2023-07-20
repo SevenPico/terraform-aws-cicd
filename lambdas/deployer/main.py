@@ -115,25 +115,29 @@ def trigger_s3_pipeline(target_name, object_uri):
     )
 
 
-def trigger_cf_pipeline(target_name, object_uri, event, context):
+def trigger_cf_pipeline(target_name, object_uri):
     print(f"Triggering '{target_name}' Cloudformation pipeline with {object_uri}")
+
     s3 = session.client('s3')
-    suffix = pathlib.Path(object_uri).suffix
-    bucket = event['Records'][0]['s3']['bucket']['name']
-    zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+    response = s3.get_object(Bucket=object_uri.split('/')[2], Key=object_uri.split('/', 3)[3])
 
-    try:
-        # Get the zipfile from S3
-        obj = s3.get_object(Bucket=bucket, Key=zip_key)
-        z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
+    with tempfile.TemporaryDirectory() as tmpdir:
+        zip_file_path = f"{tmpdir}/stack.zip"
+        target_dir = f"{tmpdir}/{target_name}"
 
-        # Extract and upload each file in the zipfile
-        for filename in z.namelist():
-            s3.upload_fileobj(
-                Fileobj=z.open(filename),
-                Bucket=bucket,
-                Key=filename,
-            )
-    except Exception as e:
-        print('Error getting object {zip_key} from bucket {bucket}.')
-        raise e
+        # Save the ZIP file to a temporary location
+        with open(zip_file_path, 'wb') as f:
+            f.write(response['Body'].read())
+
+        # Extract the ZIP file
+        with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+            zip_ref.extractall(target_dir)
+
+        # Upload the extracted files to the deployer_artifacts_bucket_id
+        for root, _, files in os.walk(target_dir):
+            for file in files:
+                source_path = os.path.join(root, file)
+                target_path = os.path.relpath(source_path, target_dir)
+                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}/{target_path}")
+
+    print("Upload complete!")
