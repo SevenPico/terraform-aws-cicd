@@ -115,7 +115,7 @@ def trigger_s3_pipeline(target_name, object_uri):
     )
 
 
-def trigger_cf_pipeline(target_name, object_uri):
+def trigger_cf_pipeline(target_name, object_uri, tempfile=None, os=None):
     print(f"Triggering '{target_name}' Cloudformation pipeline with {object_uri}")
 
     suffix = pathlib.Path(object_uri).suffix
@@ -139,6 +139,6 @@ def trigger_cf_pipeline(target_name, object_uri):
         for root, _, files in os.walk(target_dir):
             for file in files:
                 source_path = os.path.join(root, file)
-                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}{suffix} }")
+                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}{suffix}")
 
     print("Upload complete!")
