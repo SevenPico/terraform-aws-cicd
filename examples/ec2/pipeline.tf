@@ -15,17 +15,17 @@ phases:
   build:
     commands:
       - echo "Running SSM document on EC2 instances"
-      - aws ssm send-command --document-name "${SSM_DOCUMENT_NAME}" --targets "Key=tag:${TARGET_KEY},Values=${TARGET_KEY_VALUES}"
+      - aws ssm send-command --document-name "$SSM_DOCUMENT_NAME" --targets "Key=tag:$TARGET_KEY,Values=$TARGET_KEY_VALUES"
 EOF
   buildspec_env_vars = var.buildspec_env_vars != [] ? var.buildspec_env_vars : [
     {
       name  = "TARGET_KEY"
-      value = "${var.ssm_document_target_key_name}"
+      value = var.ssm_document_target_key_name
       type  = "PLAINTEXT"
     },
     {
       name  = "TARGET_KEY_VALUES"
-      value = "${var.ssm_document_target_key_values}"
+      value = var.ssm_document_target_key_values
       type  = "PLAINTEXT"
     },
     {
@@ -60,12 +60,14 @@ module "ec2_pipeline" {
   ecs_targets                     = {}
   s3_targets                      = {}
   ec2_targets = {
-    source_s3_bucket_id  = module.deployer_artifacts_bucket.bucket_id
-    source_s3_object_key = "ec2/demo.txt"
-    build = {
-      buildspec   = local.buildspec
-      env_vars    = local.buildspec_env_vars
-      policy_docs = local.buildspec_policy_docs
+    ec2 = {
+      source_s3_bucket_id  = module.deployer_artifacts_bucket.bucket_id
+      source_s3_object_key = "cicd/ec2/demo.txt"
+      build = {
+        buildspec   = local.buildspec
+        env_vars    = local.buildspec_env_vars
+        policy_docs = local.buildspec_policy_docs
+      }
     }
   }
 }
