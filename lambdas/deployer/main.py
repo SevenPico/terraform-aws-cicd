@@ -120,30 +120,11 @@ def trigger_s3_pipeline(target_name, object_uri):
 def trigger_cf_pipeline(target_name, object_uri):
     print(f"Triggering '{target_name}' Cloudformation pipeline with {object_uri}")
 
+    suffix = pathlib.Path(object_uri).suffix
+
     s3 = session.client('s3')
-    bucket_name = object_uri.split('/')[0]
-    object_key = object_uri.split('/', 1)[1]
-    response = s3.get_object(Bucket=bucket_name, Key=object_key)
-
-    print(f"Bucket: {bucket_name}, Key: {object_key}")
-
-    with tempfile.TemporaryDirectory() as tmpdir:
-        zip_file_path = f"{tmpdir}/stack.zip"
-        target_dir = f"{tmpdir}/{target_name}"
-
-        # Save the ZIP file to a temporary location
-        with open(zip_file_path, 'wb') as f:
-            f.write(response['Body'].read())
-
-        # Extract the ZIP file
-        with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-            zip_ref.extractall(target_dir)
-
-        # Upload the extracted files to the deployer_artifacts_bucket_id
-        for root, _, files in os.walk(target_dir):
-            for file in files:
-                source_path = os.path.join(root, file)
-                target_path = os.path.relpath(source_path, target_dir)
-                s3.upload_file(source_path, config.deployer_artifacts_bucket_id, f"{target_name}/{target_path}")
-
-    print("Upload complete!")
+    s3.copy_object(
+        Bucket=config.deployer_artifacts_bucket_id,
+        Key=f'{target_name}{suffix}',
+        CopySource=object_uri,
+    )
