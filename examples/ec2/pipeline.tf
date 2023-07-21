@@ -72,7 +72,7 @@ module "ec2_pipeline" {
 
 
 # ------------------------------------------------------------------------------
-# S3 Access IAM policy Document
+# Build Access IAM policy Document
 # ------------------------------------------------------------------------------
 data "aws_iam_policy_document" "build_access_policy_doc" {
   count = module.context.enabled && length(var.buildspec_policy_docs) == 0 ? 1 : 0

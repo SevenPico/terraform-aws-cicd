@@ -8,10 +8,6 @@ variable "ec2_autoscale_instance_type" {
   default = "t3.micro"
 }
 
-variable "subnet_ids" {
-  type = list(string)
-}
-
 variable "vpc_cidr_block" {
   type = string
 }

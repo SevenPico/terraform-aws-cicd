@@ -74,7 +74,7 @@ module "ec2_autoscale_group" {
   max_size         = 3
   min_size         = 1
   desired_capacity = 1
-  subnet_ids       = var.subnet_ids
+  subnet_ids       = module.vpc_subnets.public_subnet_ids
 
   associate_public_ip_address  = false
   autoscaling_policies_enabled = true
@@ -125,7 +125,7 @@ module "ec2_autoscale_group" {
   health_check_grace_period            = 300
   health_check_type                    = "EC2"
   iam_instance_profile_name            = join("", aws_iam_instance_profile.ec2_autoscale_group_instance_profile.*.name)
-  image_id                             = "ami-0574da719dca65348" #need to check
+  image_id                             = "ami-0574da719dca65348"
   instance_initiated_shutdown_behavior = "terminate"
   instance_market_options              = null
   instance_refresh                     = null
