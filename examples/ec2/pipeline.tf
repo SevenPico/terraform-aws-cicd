@@ -86,7 +86,7 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
       "s3:List*",
       "s3:Put*"
     ]
-    resources = ["*"]
+    resources = ["${module.deployer_artifacts_bucket.bucket_arn}/*"]
   }
   statement {
     effect = "Allow"
@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
     actions = [
       "ssm:SendCommand"
     ]
-    resources = ["*"]
+    resources = [aws_ssm_document.deployer[0].arn]
   }
 }
 

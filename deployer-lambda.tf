@@ -234,6 +234,9 @@ module "deployer_lambda_policy" {
         ],
         [
           for target in values(var.cloudformation_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+        ],
+        [
+          for target in values(var.ec2_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
         ]
       )
     }
