@@ -50,7 +50,9 @@ variable "s3_targets" {
 
 variable "cloudformation_targets" {
   type = map(object({
+    parameter_overrides  = map(any)
     role_arn             = string
+    template_name        = string
     source_s3_bucket_id  = string
     source_s3_object_key = string
     stack_name           = string

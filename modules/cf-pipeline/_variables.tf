@@ -62,7 +62,17 @@ variable "build_image" {
 }
 
 variable "cloudformation_role_arn" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "This property is required for the following action modes `CREATE_UPDATE`,`REPLACE_ON_FAILURE`, `DELETE_ONLY`, `CHANGE_SET_REPLACE`"
+}
+
+variable "cloudformation_template_name" {
+  type = string
+}
+
+variable "cloudformation_parameter_overrides" {
+  type    = map(any)
+  default = {}
 }
 

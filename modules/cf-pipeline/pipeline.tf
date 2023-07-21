@@ -1,4 +1,3 @@
-
 module "pipeline" {
   source  = "../codepipeline"
   context = module.context.self
@@ -41,12 +40,13 @@ module "pipeline" {
           output_artifacts = []
 
           configuration = {
-            ActionMode    = "CREATE_UPDATE"
-            Capabilities  = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-            ChangeSetName = "Cloudformation-Stack-Changes"
-            RoleArn       = var.cloudformation_role_arn
-            StackName     = var.cloudformation_stack_name
-            TemplatePath  = "source::cloudformation-template.json"
+            ActionMode         = "CREATE_UPDATE"
+            Capabilities       = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+            ChangeSetName      = "Cloudformation-Stack-Changes"
+            ParameterOverrides = var.cloudformation_parameter_overrides
+            RoleArn            = var.cloudformation_role_arn
+            StackName          = var.cloudformation_stack_name
+            TemplatePath       = "source::${var.cloudformation_template_name}"
           }
         }
       }

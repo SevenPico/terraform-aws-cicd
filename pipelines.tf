@@ -93,13 +93,15 @@ module "cf_pipeline" {
   for_each   = var.cloudformation_targets
   attributes = ["cloudformation", each.key]
 
-  artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
-  artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
-  cloudwatch_log_expiration_days = 90
-  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key           = "${module.context.id}/cloudformation/${each.key}.zip"
-  cloudformation_role_arn        = each.value.role_arn
-  cloudformation_stack_name      = each.value.stack_name
+  artifact_store_kms_key_arn         = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
+  artifact_store_s3_bucket_id        = module.deployer_artifacts_bucket.bucket_id
+  cloudwatch_log_expiration_days     = 90
+  source_s3_bucket_id                = module.deployer_artifacts_bucket.bucket_id
+  source_s3_object_key               = "${module.context.id}/cloudformation/${each.key}.zip"
+  cloudformation_role_arn            = each.value.role_arn
+  cloudformation_stack_name          = each.value.stack_name
+  cloudformation_template_name       = each.value.template_name
+  cloudformation_parameter_overrides = each.value.parameter_overrides
 }
 
 
