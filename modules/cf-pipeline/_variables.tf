@@ -76,3 +76,13 @@ variable "cloudformation_parameter_overrides" {
   default = {}
 }
 
+variable "cloudformation_action_mode" {
+  type    = string
+  default = "CREATE_UPDATE"
+}
+
+variable "cloudformation_capabilities" {
+  type    = string
+  default = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+}
+

@@ -40,8 +40,8 @@ module "pipeline" {
           output_artifacts = []
 
           configuration = {
-            ActionMode         = "CREATE_UPDATE"
-            Capabilities       = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+            ActionMode         = var.cloudformation_action_mode
+            Capabilities       = var.cloudformation_capabilities
             ChangeSetName      = "Cloudformation-Stack-Changes"
             ParameterOverrides = var.cloudformation_parameter_overrides
             RoleArn            = var.cloudformation_role_arn
