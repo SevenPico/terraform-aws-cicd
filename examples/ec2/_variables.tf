@@ -65,11 +65,6 @@ variable "s3_source_policy_documents" {
     EOT
 }
 
-variable "artifact_sns_topic_arn" {
-  type    = string
-  default = ""
-}
-
 variable "kms_key_deletion_window_in_days" {
   type    = number
   default = 30

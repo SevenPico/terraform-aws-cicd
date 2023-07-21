@@ -43,7 +43,7 @@ module "ec2_pipeline" {
 
   attributes = ["cicd"]
 
-  artifact_sns_topic_arn          = var.artifact_sns_topic_arn
+  artifact_sns_topic_arn          = try(module.sns[0].topic_arn, "")
   build_image                     = var.build_image
   cloudwatch_log_expiration_days  = var.cloudwatch_log_expiration_days
   create_kms_key                  = true
@@ -86,9 +86,7 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
       "s3:List*",
       "s3:Put*"
     ]
-    resources = [
-      module.deployer_artifacts_bucket.bucket_arn
-    ]
+    resources = [module.deployer_artifacts_bucket.bucket_arn]
   }
   statement {
     effect = "Allow"
@@ -106,4 +104,15 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
     ]
     resources = [aws_ssm_document.deployer[0].arn]
   }
+}
+
+
+# ------------------------------------------------------------------------------
+# Lambda SNS Subscription
+# ------------------------------------------------------------------------------
+module "sns" {
+  source  = "SevenPico/sns/aws"
+  version = "2.0.2"
+  context = module.context.self
+  count   = module.context.enabled ? 1 : 0
 }
