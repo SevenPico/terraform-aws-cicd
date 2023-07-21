@@ -69,6 +69,7 @@ module "ec2_autoscale_group" {
   source  = "registry.terraform.io/SevenPicoForks/ec2-autoscale-group/aws"
   version = "2.0.6"
   context = module.context.self
+  tags    = { "${var.ssm_document_target_key_name}" : "${var.ssm_document_target_key_values}" }
 
   instance_type    = var.ec2_autoscale_instance_type
   max_size         = 3

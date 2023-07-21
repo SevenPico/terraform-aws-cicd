@@ -117,10 +117,12 @@ variable "buildspec" {
 
 variable "ssm_document_target_key_name" {
   type    = string
+  default = "Process"
 }
 
 variable "ssm_document_target_key_values" {
   type    = string
+  default = "cicd"
 }
 
 variable "buildspec_env_vars" {

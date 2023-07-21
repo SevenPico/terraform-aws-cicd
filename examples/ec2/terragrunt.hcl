@@ -72,8 +72,6 @@ inputs = {
   vpc_cidr_block     = "10.10.0.0/16"
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
 
-  ssm_document_target_key_name = "Name"
-  ssm_document_target_key_values = local.id
 }
 
 remote_state {
