@@ -46,7 +46,7 @@ module "pipeline" {
             ChangeSetName = "Cloudformation-Stack-Changes"
             RoleArn       = var.cloudformation_role_arn
             StackName     = var.cloudformation_stack_name
-            TemplatePath  = "${var.source_s3_bucket_id}::${var.source_s3_object_key}"
+            TemplatePath  = "source::cloudformation-template.json"
           }
         }
       }
