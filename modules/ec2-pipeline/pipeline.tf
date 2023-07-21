@@ -56,7 +56,7 @@ module "pipeline" {
     },
 
     {
-      name = "build"
+      name = "deploy"
       actions = {
         codebuild = {
           category = "Build"

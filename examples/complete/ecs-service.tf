@@ -19,27 +19,6 @@
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
-module "vpc" {
-  source  = "cloudposse/vpc/aws"
-  version = "0.28.1"
-  context = module.context.self
-
-  cidr_block = "10.0.0.0/16"
-}
-
-module "subnets" {
-  source  = "cloudposse/dynamic-subnets/aws"
-  version = "0.39.8"
-  context = module.context.self
-
-  availability_zones   = ["us-east-1a", "us-east-1b"]
-  vpc_id               = module.vpc.vpc_id
-  igw_id               = module.vpc.igw_id
-  cidr_block           = module.vpc.vpc_cidr_block
-  nat_gateway_enabled  = true
-  nat_instance_enabled = false
-}
-
 resource "aws_ecs_cluster" "this" {
   name = module.context.id
   tags = module.context.tags
@@ -75,7 +54,7 @@ module "foo_service" {
   launch_type                        = "FARGATE"
   vpc_id                             = module.vpc.vpc_id
   security_group_ids                 = [module.vpc.vpc_default_security_group_id]
-  subnet_ids                         = module.subnets.public_subnet_ids
+  subnet_ids                         = module.vpc_subnets.public_subnet_ids
   ignore_changes_task_definition     = true
   network_mode                       = "awsvpc"
   assign_public_ip                   = true
@@ -121,7 +100,7 @@ module "bar_service" {
   launch_type                        = "FARGATE"
   vpc_id                             = module.vpc.vpc_id
   security_group_ids                 = [module.vpc.vpc_default_security_group_id]
-  subnet_ids                         = module.subnets.public_subnet_ids
+  subnet_ids                         = module.vpc_subnets.public_subnet_ids
   ignore_changes_task_definition     = true
   network_mode                       = "awsvpc"
   assign_public_ip                   = true

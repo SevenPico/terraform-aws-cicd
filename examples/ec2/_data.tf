@@ -15,17 +15,27 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./examples/complete/s3-site.tf
+##  ./examples/complete/_data.tf
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
-module "site_bucket" {
-  source  = "SevenPico/s3-website/aws"
-  version = "2.0.2"
-  context = module.context.self
+# The AWS region currently being used.
+data "aws_region" "current" {
+  count = module.context.enabled ? 1 : 0
+}
 
-  for_each            = toset(["foo", "bar"])
-  name                = each.key
-  attributes          = ["site-origin"]
-  acm_certificate_arn = var.acm_certificate_arn
+# The AWS account id
+data "aws_caller_identity" "current" {
+  count = module.context.enabled ? 1 : 0
+}
+
+# The AWS partition (commercial or govcloud)
+data "aws_partition" "current" {
+  count = module.context.enabled ? 1 : 0
+}
+
+locals {
+  arn_prefix = "arn:${try(data.aws_partition.current[0].partition, "")}"
+  account_id = try(data.aws_caller_identity.current[0].account_id, "")
+  region     = try(data.aws_region.current[0].name, "")
 }
