@@ -17,7 +17,7 @@ phases:
       - echo "Running SSM document on EC2 instances"
       - aws ssm send-command --document-name "$SSM_DOCUMENT_NAME" --targets "Key=tag:$TARGET_KEY,Values=$TARGET_KEY_VALUES"
 EOF
-  buildspec_env_vars = var.buildspec_env_vars != [] ? var.buildspec_env_vars : [
+  buildspec_env_vars = [      #var.buildspec_env_vars != [] ? var.buildspec_env_vars :
     {
       name  = "TARGET_KEY"
       value = var.ssm_document_target_key_name
@@ -62,7 +62,7 @@ module "ec2_pipeline" {
   ec2_targets = {
     ec2 = {
       source_s3_bucket_id  = module.source_bucket.bucket_id
-      source_s3_object_key = "cicd/ec2/demo.txt"
+      source_s3_object_key = "cicd/ec2/demo.zip"
       build = {
         buildspec   = local.buildspec
         env_vars    = local.buildspec_env_vars
