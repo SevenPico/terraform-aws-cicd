@@ -75,9 +75,9 @@ module "ec2_autoscale_group" {
   max_size         = 3
   min_size         = 1
   desired_capacity = 1
-  subnet_ids       = module.vpc_subnets.public_subnet_ids
+  subnet_ids       = module.vpc_subnets.private_subnet_ids
 
-  associate_public_ip_address             = false
+  associate_public_ip_address             = true
   autoscaling_policies_enabled            = true
   block_device_mappings                   = []
   capacity_rebalance                      = false
