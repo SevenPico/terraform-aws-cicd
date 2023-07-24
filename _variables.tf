@@ -52,7 +52,7 @@ variable "cloudformation_targets" {
   type = map(object({
     action_mode          = string
     capabilities         = string
-    parameter_overrides  = object({})
+    parameter_overrides  = string
     role_arn             = string
     template_name        = string
     source_s3_bucket_id  = string
