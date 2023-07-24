@@ -22,7 +22,7 @@ resource "aws_iam_role" "cloudformation_assume_role" {
 }
 
 module "cicd" {
-  source = "../../"
+  source     = "../../"
   context    = module.context.self
   enabled    = module.context.enabled
   attributes = ["cicd"]
@@ -41,15 +41,15 @@ module "cicd" {
       template_name        = "cloudformation-template.json"
       stack_name           = module.cloudformation_stack.name
       source_s3_bucket_id  = module.build_artifacts_bucket.bucket_arn
-      source_s3_object_key = aws_s3_object.template_zip.key
+      source_s3_object_key = aws_s3_object.template_zip[0].key
     }
   }
-  create_kms_key                 = true
-  ecs_deployment_timeout         = 15 # min
-  ecs_targets                    = {}
-  overwrite_ssm_parameters       = false
-  s3_object_ownership            = "BucketOwnerEnforced"
-  s3_source_policy_documents     = []
-  s3_targets                     = {}
-  slack_notifications_enabled    = false
+  create_kms_key              = true
+  ecs_deployment_timeout      = 15 # min
+  ecs_targets                 = {}
+  overwrite_ssm_parameters    = false
+  s3_object_ownership         = "BucketOwnerEnforced"
+  s3_source_policy_documents  = []
+  s3_targets                  = {}
+  slack_notifications_enabled = false
 }

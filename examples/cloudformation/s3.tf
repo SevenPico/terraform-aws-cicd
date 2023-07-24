@@ -6,6 +6,7 @@ module "s3_bucket_context" {
   version    = "2.0.0"
   context    = module.context.self
   attributes = ["build"]
+  enabled    = module.context.enabled
 }
 
 
@@ -18,7 +19,6 @@ module "build_artifacts_bucket" {
   context    = module.s3_bucket_context.self
   attributes = ["artifacts"]
 
-  acl                           = "private"
   allow_encrypted_uploads_only  = false
   allow_ssl_requests_only       = true
   block_public_acls             = true
@@ -32,7 +32,7 @@ module "build_artifacts_bucket" {
   ignore_public_acls            = true
   kms_master_key_arn            = ""
   lifecycle_configuration_rules = []
-  logging =  null
+  logging                       = null
   object_lock_configuration     = null
   privileged_principal_actions  = []
   privileged_principal_arns     = []
@@ -62,14 +62,18 @@ module "build_artifacts_bucket" {
 
 
 resource "aws_s3_object" "template_file" {
+  count      = module.s3_bucket_context.enabled ? 1 : 0
   depends_on = [module.build_artifacts_bucket]
+
   bucket = module.build_artifacts_bucket.bucket_arn
   key    = "cloudformation/0.0.1/cloudformation-template.yaml"
-  source = "./cloudformation-template.yaml"
+  source = "${path.module}/cloudformation-template.yaml"
 }
 
 resource "aws_s3_object" "template_zip" {
+  count      = module.s3_bucket_context.enabled ? 1 : 0
   depends_on = [module.build_artifacts_bucket]
+
   bucket = module.build_artifacts_bucket.bucket_arn
   key    = "cloudformation/0.0.1/cloudformation-template-0.0.1.zip"
   source = data.archive_file.artifact[0].id
@@ -80,7 +84,7 @@ resource "aws_s3_object" "template_zip" {
 # Lambda Artifact
 #------------------------------------------------------------------------------
 data "archive_file" "artifact" {
-  depends_on = [module.build_artifacts_bucket]
+  depends_on  = [module.build_artifacts_bucket]
   count       = module.s3_bucket_context.enabled ? 1 : 0
   type        = "zip"
   source_dir  = "${path.module}/cloudformation-template.yaml"
