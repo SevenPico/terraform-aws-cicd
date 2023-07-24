@@ -77,7 +77,7 @@ module "ec2_pipeline" {
 # Build Access IAM policy Document
 # ------------------------------------------------------------------------------
 data "aws_iam_policy_document" "build_access_policy_doc" {
-  count = module.context.enabled && length(var.buildspec_policy_docs) == 0 ? 1 : 0
+  count = module.context.enabled && var.buildspec_policy_docs == null ? 1 : 0
 
   statement {
     effect = "Allow"
