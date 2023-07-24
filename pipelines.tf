@@ -103,7 +103,7 @@ module "cf_pipeline" {
   cloudformation_role_arn            = each.value.role_arn
   cloudformation_stack_name          = each.value.stack_name
   cloudformation_template_name       = each.value.template_name
-  cloudformation_parameter_overrides = jsonencode(each.value.parameter_overrides)
+#  cloudformation_parameter_overrides = jsonencode(each.value.parameter_overrides)
 }
 
 

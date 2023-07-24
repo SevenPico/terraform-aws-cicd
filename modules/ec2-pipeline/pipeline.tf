@@ -24,7 +24,7 @@ module "pipeline" {
   context = module.context.self
 
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
-  artifact_store_kms_key_arn      = var.artifact_store_kms_key_arn
+  artifact_store_kms_key_arn     = var.artifact_store_kms_key_arn
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   iam_policy_statements = {
     codebuild = {
