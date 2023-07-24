@@ -25,7 +25,6 @@ EOF
     },
     {
       name  = "TARGET_KEY_VALUES"
-      name  = "TARGET_KEY_VALUES"
       value = var.ssm_document_target_key_values
       type  = "PLAINTEXT"
     },
