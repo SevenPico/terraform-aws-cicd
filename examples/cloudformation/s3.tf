@@ -83,5 +83,5 @@ resource "aws_s3_object" "template_zip" {
 
   bucket = module.build_artifacts_bucket.bucket_id
   key    = "cloudformation/0.0.1/cloudformation-template-0.0.1.zip"
-  source = data.archive_file.artifact[0].id
+  source = data.archive_file.artifact[0].output_path
 }
