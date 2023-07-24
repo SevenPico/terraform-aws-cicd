@@ -13,6 +13,14 @@ module "s3_bucket_context" {
 # ------------------------------------------------------------------------------
 # Artifact Bucket for use by Deployer Lambda and Pipelines
 # ------------------------------------------------------------------------------
+data "archive_file" "artifact" {
+  depends_on  = [module.build_artifacts_bucket]
+  count       = module.s3_bucket_context.enabled ? 1 : 0
+  type        = "zip"
+  source_file = "${path.module}/cloudformation-template.yaml"
+  output_path = "${path.module}/cloudformation-template.zip"
+}
+
 module "build_artifacts_bucket" {
   source     = "SevenPicoForks/s3-bucket/aws"
   version    = "4.0.4"
@@ -77,16 +85,4 @@ resource "aws_s3_object" "template_zip" {
   bucket = module.build_artifacts_bucket.bucket_arn
   key    = "cloudformation/0.0.1/cloudformation-template-0.0.1.zip"
   source = data.archive_file.artifact[0].id
-}
-
-
-#------------------------------------------------------------------------------
-# Lambda Artifact
-#------------------------------------------------------------------------------
-data "archive_file" "artifact" {
-  depends_on  = [module.build_artifacts_bucket]
-  count       = module.s3_bucket_context.enabled ? 1 : 0
-  type        = "zip"
-  source_dir  = "${path.module}/cloudformation-template.yaml"
-  output_path = "${path.module}/cloudformation-template.zip"
 }
