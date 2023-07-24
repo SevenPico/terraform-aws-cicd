@@ -11,7 +11,7 @@ module "s3_bucket_context" {
 
 
 # ------------------------------------------------------------------------------
-# Artifact Bucket for use by Deployer Lambda and Pipelines
+# Artifact Bucket
 # ------------------------------------------------------------------------------
 data "archive_file" "artifact" {
   depends_on  = [module.build_artifacts_bucket]
@@ -68,12 +68,11 @@ module "build_artifacts_bucket" {
   ]
 }
 
-
 resource "aws_s3_object" "template_file" {
   count      = module.s3_bucket_context.enabled ? 1 : 0
   depends_on = [module.build_artifacts_bucket]
 
-  bucket = module.build_artifacts_bucket.bucket_arn
+  bucket = module.build_artifacts_bucket.bucket_id
   key    = "cloudformation/0.0.1/cloudformation-template.yaml"
   source = "${path.module}/cloudformation-template.yaml"
 }
@@ -82,7 +81,7 @@ resource "aws_s3_object" "template_zip" {
   count      = module.s3_bucket_context.enabled ? 1 : 0
   depends_on = [module.build_artifacts_bucket]
 
-  bucket = module.build_artifacts_bucket.bucket_arn
+  bucket = module.build_artifacts_bucket.bucket_id
   key    = "cloudformation/0.0.1/cloudformation-template-0.0.1.zip"
   source = data.archive_file.artifact[0].id
 }
