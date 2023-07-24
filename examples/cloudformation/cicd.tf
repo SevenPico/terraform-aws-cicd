@@ -36,7 +36,7 @@ module "cicd" {
     cloudformation = {
       action_mode          = "CREATE_UPDATE"
       capabilities         = "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-      parameter_overrides  = '{}'
+      parameter_overrides  = "{}"
       role_arn             = try(aws_iam_role.cloudformation_assume_role[0].arn, "")
       template_name        = "cloudformation-template.json"
       stack_name           = module.cloudformation_stack.name
