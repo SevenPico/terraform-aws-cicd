@@ -13,7 +13,7 @@ module "cloudformation_stack" {
   capabilities       = ["CAPABILITY_NAMED_IAM", "CAPABILITY_IAM"]
   on_failure         = "ROLLBACK"
   policy_body        = ""
-  template_url       = "https://${module.build_artifacts_bucket.bucket_id}.s3.amazonaws.com/${aws_s3_object.template_file[0].key}"
+  template_url       = try("https://${module.build_artifacts_bucket.bucket_id}.s3.amazonaws.com/cloudformation/0.0.1/cloudformation-template.yaml", "")
   template_body      = ""
   timeout_in_minutes = 30
 }
