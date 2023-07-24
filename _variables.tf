@@ -52,12 +52,12 @@ variable "cloudformation_targets" {
   type = map(object({
     action_mode          = string
     capabilities         = string
-#    parameter_overrides  = string
+    parameter_overrides  = string
     role_arn             = string
-    template_name        = string
     source_s3_bucket_id  = string
     source_s3_object_key = string
     stack_name           = string
+    template_name        = string
   }))
   default = {}
 }
