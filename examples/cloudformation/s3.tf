@@ -63,14 +63,14 @@ module "build_artifacts_bucket" {
 
 resource "aws_s3_object" "template_file" {
   depends_on = [module.build_artifacts_bucket]
-  bucket = module.build_artifacts_bucket[0].bucket_arn
+  bucket = module.build_artifacts_bucket.bucket_arn
   key    = "cloudformation/0.0.1/cloudformation-template.yaml"
   source = "./cloudformation-template.yaml"
 }
 
 resource "aws_s3_object" "template_zip" {
   depends_on = [module.build_artifacts_bucket]
-  bucket = module.build_artifacts_bucket[0].bucket_arn
+  bucket = module.build_artifacts_bucket.bucket_arn
   key    = "cloudformation/0.0.1/cloudformation-template-0.0.1.zip"
   source = data.archive_file.artifact[0].id
 }
