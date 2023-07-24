@@ -17,7 +17,7 @@ phases:
       - echo "Running SSM document on EC2 instances"
       - aws ssm send-command --document-name "$SSM_DOCUMENT_NAME" --targets "Key=tag:$TARGET_KEY,Values=$TARGET_KEY_VALUES"
 EOF
-  buildspec_env_vars = var.buildspec_env_vars == [] ? [
+  buildspec_env_vars = var.buildspec_env_vars != null ? var.buildspec_env_vars : [
     {
       name  = "TARGET_KEY"
       value = var.ssm_document_target_key_name
@@ -33,8 +33,8 @@ EOF
       value = local.ssm_deploy_document_name
       type  = "PLAINTEXT"
     },
-  ] : var.buildspec_env_vars
-  buildspec_policy_docs = var.buildspec_policy_docs != [] ? var.buildspec_policy_docs : data.aws_iam_policy_document.build_access_policy_doc.*.json
+  ]
+  buildspec_policy_docs = var.buildspec_policy_docs != null ? var.buildspec_policy_docs : data.aws_iam_policy_document.build_access_policy_doc.*.json
 }
 
 module "ec2_pipeline" {

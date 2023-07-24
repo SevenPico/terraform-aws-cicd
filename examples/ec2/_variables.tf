@@ -122,10 +122,10 @@ variable "ssm_document_target_key_values" {
 
 variable "buildspec_env_vars" {
   type    = list(any)
-  default = []
+  default = null
 }
 
 variable "buildspec_policy_docs" {
   type    = list(string)
-  default = []
+  default = null
 }
