@@ -8,7 +8,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.7
     commands:
       - echo "Installing AWS CLI"
       - pip install --upgrade awscli
@@ -24,6 +24,7 @@ EOF
       type  = "PLAINTEXT"
     },
     {
+      name  = "TARGET_KEY_VALUES"
       name  = "TARGET_KEY_VALUES"
       value = var.ssm_document_target_key_values
       type  = "PLAINTEXT"
@@ -61,7 +62,7 @@ module "ec2_pipeline" {
   s3_targets                      = {}
   ec2_targets = {
     ec2 = {
-      source_s3_bucket_id  = module.deployer_artifacts_bucket.bucket_id
+      source_s3_bucket_id  = module.source_bucket.bucket_id
       source_s3_object_key = "cicd/ec2/demo.txt"
       build = {
         buildspec   = local.buildspec
@@ -86,7 +87,10 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
       "s3:List*",
       "s3:Put*"
     ]
-    resources = ["${module.deployer_artifacts_bucket.bucket_arn}/*"]
+    resources = [
+      "${module.source_bucket.bucket_arn}/*",
+      "arn:aws:s3:::${module.context.id}-cicd-deployer-artifacts/*"
+    ]
   }
   statement {
     effect = "Allow"

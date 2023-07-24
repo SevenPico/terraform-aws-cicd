@@ -69,7 +69,7 @@ module "ec2_autoscale_group" {
   source  = "registry.terraform.io/SevenPicoForks/ec2-autoscale-group/aws"
   version = "2.0.6"
   context = module.context.self
-  tags    = { "${var.ssm_document_target_key_name}" : "${var.ssm_document_target_key_values}" }
+  tags    = { (var.ssm_document_target_key_name) : var.ssm_document_target_key_values }
 
   instance_type    = var.ec2_autoscale_instance_type
   max_size         = 3
@@ -77,24 +77,9 @@ module "ec2_autoscale_group" {
   desired_capacity = 1
   subnet_ids       = module.vpc_subnets.public_subnet_ids
 
-  associate_public_ip_address  = false
-  autoscaling_policies_enabled = true
-  block_device_mappings = [
-    {
-      device_name  = "/dev/sda1"
-      no_device    = "false"
-      virtual_name = "root"
-      ebs = {
-        encrypted             = true
-        volume_size           = 256
-        delete_on_termination = true
-        iops                  = null
-        kms_key_id            = null
-        snapshot_id           = null
-        volume_type           = "gp2"
-      }
-    }
-  ]
+  associate_public_ip_address             = false
+  autoscaling_policies_enabled            = true
+  block_device_mappings                   = []
   capacity_rebalance                      = false
   cpu_utilization_high_evaluation_periods = 2
   cpu_utilization_high_period_seconds     = 300
@@ -151,7 +136,7 @@ module "ec2_autoscale_group" {
   scale_up_cooldown_seconds            = 300
   scale_up_policy_type                 = "SimpleScaling"
   scale_up_scaling_adjustment          = 1
-  security_group_ids                   = []
+  security_group_ids                   = [module.ec2_autoscale_group_sg.id]
   service_linked_role_arn              = ""
   suspended_processes                  = []
   tag_specifications_resource_types = [
@@ -160,7 +145,7 @@ module "ec2_autoscale_group" {
   ]
   target_group_arns         = []
   termination_policies      = ["Default"]
-  user_data_base64          = null
+  user_data_base64          = base64encode("")
   wait_for_capacity_timeout = "10m"
   wait_for_elb_capacity     = 0
   warm_pool                 = null
@@ -172,9 +157,9 @@ module "ec2_autoscale_group" {
 # EC2 Auto Scale Security Group
 #------------------------------------------------------------------------------
 module "ec2_autoscale_group_sg" {
-  source  = "registry.terraform.io/SevenPicoForks/security-group/aws"
-  version = "3.0.0"
-  context = module.context.self
+  source     = "registry.terraform.io/SevenPicoForks/security-group/aws"
+  version    = "3.0.0"
+  context    = module.context.self
   attributes = ["ec2"]
 
   allow_all_egress           = false

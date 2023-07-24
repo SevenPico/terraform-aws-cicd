@@ -1,11 +1,11 @@
 # ------------------------------------------------------------------------------
-# Artifact Bucket
+# Source Bucket
 # ------------------------------------------------------------------------------
-module "deployer_artifacts_bucket" {
+module "source_bucket" {
   source     = "SevenPicoForks/s3-bucket/aws"
   version    = "4.0.4"
   context    = module.context.self
-  attributes = ["artifacts"]
+  attributes = ["source"]
 
   acl                           = "private"
   allow_encrypted_uploads_only  = var.allow_encrypted_uploads_only
