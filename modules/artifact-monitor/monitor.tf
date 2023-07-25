@@ -79,9 +79,10 @@ module "ecr_event" {
 # S3 Object Update Event Rule
 # ------------------------------------------------------------------------------
 module "s3_event" {
-  source  = "SevenPico/events/aws//cloudwatch-event"
-  version = "1.0.0"
-  context = module.context.self
+  source          = "SevenPico/events/aws//cloudwatch-event"
+  version         = "1.0.0"
+  context         = module.context.self
+  id_length_limit = 128
 
   for_each = toset(var.s3_bucket_ids)
   name     = each.key
