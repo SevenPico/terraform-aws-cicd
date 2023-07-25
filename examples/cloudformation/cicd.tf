@@ -2,10 +2,10 @@
 # CI/CD Artifact Monitor
 # ------------------------------------------------------------------------------
 module "artifact_monitor" {
-  source  = "../../modules/artifact-monitor"
+  source  = "registry.terraform.io/SevenPico/cicd/aws//modules/artifact-monitor"
+  version = "1.0.3"
   context = module.context.self
   name    = "artifact-monitor"
-  enabled = module.context.enabled
 
   cloudwatch_log_expiration_days = 30
   ecr_repository_url_map         = {}
@@ -14,6 +14,7 @@ module "artifact_monitor" {
   sns_pub_principals             = {}
   sns_sub_principals             = {}
 }
+
 
 
 # ------------------------------------------------------------------------------
