@@ -152,6 +152,7 @@ resource "aws_sns_topic_subscription" "deployer_lambda" {
   endpoint  = module.deployer_lambda.arn
   protocol  = "lambda"
   topic_arn = var.artifact_sns_topic_arn
+
 }
 
 resource "aws_lambda_permission" "artifact_sns" {

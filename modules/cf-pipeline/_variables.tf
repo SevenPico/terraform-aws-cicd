@@ -76,7 +76,7 @@ variable "cloudformation_parameter_overrides" {
   default = "{}"
   description = <<EOF
 Allows you to input custom values when you create or update a stack.
-'{"InstanceType" : "t2.small","KeyName": "my-keypair"}'
+"{\"InstanceType\" : \"t2.small\",\"KeyName\": \"my-keypair\"}"
 EOF
 }
 

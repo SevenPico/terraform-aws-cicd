@@ -43,7 +43,7 @@ module "pipeline" {
             ActionMode         = var.cloudformation_action_mode
             Capabilities       = var.cloudformation_capabilities
             ChangeSetName      = "Cloudformation-Stack-Changes"
-#            ParameterOverrides = var.cloudformation_parameter_overrides
+            ParameterOverrides = var.cloudformation_parameter_overrides
             RoleArn            = var.cloudformation_role_arn
             StackName          = var.cloudformation_stack_name
             TemplatePath       = "source::${var.cloudformation_template_name}"
