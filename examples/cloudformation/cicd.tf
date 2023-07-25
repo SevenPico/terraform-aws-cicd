@@ -44,7 +44,7 @@ module "cloudformation_role_arn" {
     permissions_boundary     = ""
     policy_description       = "Administrator Permissions"
     policy_document_count    = 1
-    policy_documents         = [data.aws_iam_policy_document.cloudformation_assume_role_policy[0].json]
+    policy_documents         = try([data.aws_iam_policy_document.cloudformation_assume_role_policy[0].json], [])
     principals               = {
       Service : [
         "cloudformation.amazonaws.com"
