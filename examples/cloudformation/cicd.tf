@@ -24,9 +24,8 @@ resource "aws_iam_role" "cloudformation_assume_role" {
 module "cicd" {
   source     = "../../"
   context    = module.context.self
-  enabled    = module.context.enabled
   attributes = ["cicd"]
-  depends_on = [module.build_artifacts_bucket,aws_s3_object.template_zip]
+  depends_on = [module.build_artifacts_bucket, aws_s3_object.template_zip]
 
   access_log_bucket_name            = null
   access_log_bucket_prefix_override = null
@@ -42,7 +41,7 @@ module "cicd" {
       template_name        = "cloudformation-template.json"
       stack_name           = module.cloudformation_stack.name
       source_s3_bucket_id  = module.build_artifacts_bucket.bucket_arn
-      source_s3_object_key = try(aws_s3_object.template_zip[0].key,"")
+      source_s3_object_key = "cloudformation/0.0.1/cloudformation-template.yaml"
     }
   }
   create_kms_key              = true
