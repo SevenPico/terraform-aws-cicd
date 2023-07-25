@@ -77,7 +77,7 @@ module "ec2_autoscale_group" {
   desired_capacity = 1
   subnet_ids       = module.vpc_subnets.private_subnet_ids
 
-  associate_public_ip_address             = false
+  associate_public_ip_address             = true
   autoscaling_policies_enabled            = false
   block_device_mappings                   = []
   capacity_rebalance                      = false
@@ -162,7 +162,7 @@ module "ec2_autoscale_group_sg" {
   context    = module.context.self
   attributes = ["ec2"]
 
-  allow_all_egress           = false
+  allow_all_egress           = true
   create_before_destroy      = false
   inline_rules_enabled       = false
   preserve_security_group_id = true
@@ -176,7 +176,7 @@ module "ec2_autoscale_group_sg" {
       protocol                 = "tcp"
       from_port                = 443
       to_port                  = 443
-      cidr_blocks              = [module.vpc.vpc_cidr_block]
+      cidr_blocks              = ["0.0.0.0/0"]
       source_security_group_id = null
     }
   ]

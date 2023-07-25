@@ -103,9 +103,13 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
   statement {
     effect = "Allow"
     actions = [
-      "ssm:SendCommand"
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel",
+      "ssm:*"
     ]
-    resources = [aws_ssm_document.deployer[0].arn]
+    resources = ["*"]
   }
 }
 
