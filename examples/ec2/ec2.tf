@@ -47,8 +47,8 @@ module "ec2_autoscale_group_role" {
   policy_documents         = try(data.aws_iam_policy_document.ec2_autoscale_group_policy_doc[*].json, [])
   principals = {
     Service : [
+      "ec2.amazonaws.com",
       "ssm.amazonaws.com",
-      "ec2.amazonaws.com"
     ]
   }
   role_description = "IAM role with permissions to perform actions required by the Ec2 instance"
@@ -78,7 +78,7 @@ module "ec2_autoscale_group" {
   subnet_ids       = module.vpc_subnets.private_subnet_ids
 
   associate_public_ip_address             = false
-  autoscaling_policies_enabled            = true
+  autoscaling_policies_enabled            = false
   block_device_mappings                   = []
   capacity_rebalance                      = false
   cpu_utilization_high_evaluation_periods = 2
