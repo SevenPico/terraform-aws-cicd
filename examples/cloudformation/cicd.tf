@@ -12,7 +12,7 @@ module "artifact_monitor" {
   s3_bucket_ids                  = [module.build_artifacts_bucket.bucket_id]
   slack_notifications_enabled    = false
   sns_pub_principals             = {}
-  sns_sub_principals             = { AWS = local.account_id }
+  sns_sub_principals             = {}
 }
 
 
