@@ -2,8 +2,7 @@
 # CI/CD Artifact Monitor
 # ------------------------------------------------------------------------------
 module "artifact_monitor" {
-  source  = "registry.terraform.io/SevenPico/cicd/aws//modules/artifact-monitor"
-  version = "1.0.3"
+  source  = "../../modules/artifact-monitor"
   context = module.context.self
   name    = "artifact-monitor"
 
