@@ -1,4 +1,22 @@
 # ------------------------------------------------------------------------------
+# CI/CD Artifact Monitor
+# ------------------------------------------------------------------------------
+module "artifact_monitor" {
+  source  = "../../modules/artifact-monitor"
+  context = module.context.self
+  name    = "artifact-monitor"
+  enabled = module.context.enabled
+
+  cloudwatch_log_expiration_days = 30
+  ecr_repository_url_map         = {}
+  s3_bucket_ids                  = [module.build_artifacts_bucket.bucket_id]
+  slack_notifications_enabled    = false
+  sns_pub_principals             = {}
+  sns_sub_principals             = { AWS = local.account_id }
+}
+
+
+# ------------------------------------------------------------------------------
 # CI/CD
 # ------------------------------------------------------------------------------
 data "aws_iam_policy_document" "cloudformation_assume_role_policy" {
@@ -31,7 +49,7 @@ module "cicd" {
   access_log_bucket_name            = null
   access_log_bucket_prefix_override = null
   allow_ssl_requests_only           = true
-  artifact_sns_topic_arn            = module.build_artifacts_bucket.bucket_arn
+  artifact_sns_topic_arn            = module.artifact_monitor.sns_topic_arn
   cloudwatch_log_expiration_days    = 30
   cloudformation_targets = {
     cloudformation = {
