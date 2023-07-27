@@ -115,7 +115,7 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
 
 
 # ------------------------------------------------------------------------------
-# Lambda SNS Subscription
+# Artifact SNS Subscription
 # ------------------------------------------------------------------------------
 module "sns" {
   source  = "SevenPico/sns/aws"
