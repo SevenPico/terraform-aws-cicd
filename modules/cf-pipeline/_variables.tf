@@ -72,8 +72,8 @@ variable "cloudformation_template_name" {
 }
 
 variable "cloudformation_parameter_overrides" {
-  type    = string
-  default = "{}"
+  type        = string
+  default     = "{}"
   description = <<EOF
 Allows you to input custom values when you create or update a stack.
 "{\"InstanceType\" : \"t2.small\",\"KeyName\": \"my-keypair\"}"
