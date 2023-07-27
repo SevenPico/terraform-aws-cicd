@@ -20,11 +20,12 @@
 ## ----------------------------------------------------------------------------
 
 module "site_bucket" {
-  source  = "SevenPico/s3-bucket/aws"
-  version = "4.0.1"
+  source  = "SevenPico/s3-website/aws"
+  version = "2.0.2"
   context = module.context.self
 
-  for_each   = toset(["foo", "bar"])
-  name       = each.key
-  attributes = ["site-origin"]
+  for_each            = toset(["foo", "bar"])
+  name                = each.key
+  attributes          = ["site-origin"]
+  acm_certificate_arn = var.acm_certificate_arn
 }

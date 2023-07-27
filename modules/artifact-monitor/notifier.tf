@@ -48,7 +48,7 @@ module "notifier_lambda" {
   cloudwatch_log_subscription_filters = {}
   description                         = "Notify on Artifact Events."
   event_source_mappings               = {}
-  filename                            = data.archive_file.notifier_lambda[0].output_path
+  filename                            = var.slack_notifications_enabled ? data.archive_file.notifier_lambda[0].output_path : null
   function_name                       = module.notifier_context.id
   handler                             = "main.lambda_handler"
   ignore_external_function_updates    = false
@@ -67,7 +67,7 @@ module "notifier_lambda" {
   s3_key                              = null
   s3_object_version                   = null
   sns_subscriptions                   = {}
-  source_code_hash                    = data.archive_file.notifier_lambda[0].output_base64sha256
+  source_code_hash                    = var.slack_notifications_enabled ? data.archive_file.notifier_lambda[0].output_base64sha256 : ""
   ssm_parameter_names                 = null
   timeout                             = 60
   tracing_config_mode                 = null
@@ -82,7 +82,7 @@ module "notifier_lambda" {
 }
 
 data "archive_file" "notifier_lambda" {
-  count       = module.notifier_context.enabled ? 1 : 0
+  count       = module.notifier_context.enabled && var.slack_notifications_enabled ? 1 : 0
   type        = "zip"
   source_dir  = "${path.module}/lambdas/notifier"
   output_path = "${path.module}/.build/notifier-lambda.zip"

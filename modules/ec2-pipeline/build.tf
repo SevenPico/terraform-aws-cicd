@@ -15,7 +15,7 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./modules/s3-pipeline/pre-deploy.tf
+##  ./modules/ec2-pipeline/pre-deploy.tf
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
@@ -51,12 +51,12 @@
 # -----------------------------------------------------------------------------
 # Codebuild Project
 # -----------------------------------------------------------------------------
-module "pre_deploy_codebuild" {
+module "codebuild" {
   source     = "registry.terraform.io/SevenPico/codebuild/aws"
   version    = "2.0.2"
   context    = module.context.self
-  enabled    = module.context.enabled && var.pre_deploy_enabled
-  attributes = ["pre-deploy"]
+  enabled    = module.context.enabled
+  attributes = ["build"]
 
   access_log_bucket_name                = ""
   artifact_location                     = ""
@@ -69,16 +69,16 @@ module "pre_deploy_codebuild" {
   build_image_pull_credentials_type     = "CODEBUILD"
   build_timeout                         = 10
   build_type                            = "LINUX_CONTAINER"
-  buildspec                             = var.pre_deploy_buildspec
+  buildspec                             = var.buildspec
   cache_bucket_suffix_enabled           = true
   cache_expiration_days                 = 7
   cache_type                            = "NO_CACHE"
-  codebuild_policy_documents            = var.pre_deploy_policy_docs
+  codebuild_policy_documents            = var.build_policy_docs
   concurrent_build_limit                = null
   description                           = "Allows for changes to artifact files before deployment to the target bucket"
   encryption_enabled                    = false
   encryption_key                        = null
-  environment_variables                 = var.pre_deploy_environment_variables
+  environment_variables                 = var.build_environment_variables
   fetch_git_submodules                  = false
   file_system_locations                 = {}
   git_clone_depth                       = null

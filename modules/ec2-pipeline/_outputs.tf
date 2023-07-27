@@ -15,41 +15,18 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./_outputs.tf
+##  ./modules/ec2-pipeline/_outputs.tf
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
-output "kms_key_arn" {
-  value       = module.kms_key.key_arn
-  description = "Key ARN"
+output "arn" {
+  value = module.pipeline.arn
 }
 
-output "kms_key_id" {
-  value       = module.kms_key.key_id
-  description = "Key ID"
+output "id" {
+  value = module.pipeline.id
 }
 
-output "kms_key_alias_arn" {
-  value       = module.kms_key.alias_arn
-  description = "Alias ARN"
-}
-
-output "kms_key_alias_name" {
-  value       = module.kms_key.alias_name
-  description = "Alias name"
-}
-
-output "ecs_pipelines_names_map" {
-  value = { for k, v in module.ecs_pipeline : k => v.id }
-}
-
-output "s3_pipelines_names_map" {
-  value = { for k, v in module.s3_pipeline : k => v.id }
-}
-
-output "ecs_target_version_ssm_parameter_names_map" {
-  value = local.ecs_target_version_ssm_parameter_names_map
-}
-output "s3_target_version_ssm_parameter_names_map" {
-  value = local.s3_target_version_ssm_parameter_names_map
+output "role_arn" {
+  value = module.pipeline.role_arn
 }
