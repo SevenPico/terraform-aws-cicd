@@ -30,10 +30,43 @@ variable "ecs_targets" {
 
 variable "s3_targets" {
   type = map(object({
+    source_s3_bucket_id    = string
+    source_s3_object_key   = string
+    target_s3_bucket_id    = string
+    ssm_artifact_uri_value = string #This value will be a URI for the build artifacts .zip file, which will be saved in the ssm parameter store.
+    pre_deploy = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
+  }))
+  default = {}
+}
+
+variable "cloudformation_targets" {
+  type = map(object({
+    action_mode          = string
+    capabilities         = string
+    parameter_overrides  = string
+    role_arn             = string
     source_s3_bucket_id  = string
     source_s3_object_key = string
-    target_s3_bucket_id  = string
-    pre_deploy = object({
+    stack_name           = string
+    template_name        = string
+  }))
+  default = {}
+}
+
+variable "ec2_targets" {
+  type = map(object({
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    build = object({
       buildspec   = string
       policy_docs = list(string)
       env_vars = list(object({
@@ -52,13 +85,13 @@ variable "cloudwatch_log_expiration_days" {
   default = 90
 }
 
-variable "source_s3_bucket_id"{
-  type = string
+variable "source_s3_bucket_id" {
+  type    = string
   default = ""
 }
 
-variable "source_s3_object_key"{
-  type = string
+variable "source_s3_object_key" {
+  type    = string
   default = ""
 }
 
@@ -160,4 +193,9 @@ variable "build_image" {
   type        = string
   default     = "aws/codebuild/standard:2.0"
   description = "Docker image for build environment, e.g. 'aws/codebuild/standard:2.0' or 'aws/codebuild/eb-nodejs-6.10.0-amazonlinux-64:4.0.0'. For more info: http://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref.html"
+}
+
+variable "cloudformation_stack_name" {
+  type    = string
+  default = ""
 }

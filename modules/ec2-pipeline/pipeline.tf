@@ -15,7 +15,7 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./modules/ecs-pipeline/pipeline.tf
+##  ./modules/ec2-pipeline/pipeline.tf
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
@@ -26,13 +26,19 @@ module "pipeline" {
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
   artifact_store_kms_key_arn     = var.artifact_store_kms_key_arn
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-  iam_policy_statements          = {}
+  iam_policy_statements = {
+    codebuild = {
+      effect    = "Allow"
+      actions   = ["codebuild:*"]
+      resources = [module.codebuild.project_arn]
+    }
+  }
 
   stages = [
     {
       name = "source"
       actions = {
-        s3 = {
+        s3-source = {
           category = "Source"
           owner    = "AWS"
           provider = "S3"
@@ -42,29 +48,27 @@ module "pipeline" {
           output_artifacts = ["source"]
 
           configuration = {
-            S3Bucket    = var.image_detail_s3_bucket_id
-            S3ObjectKey = var.image_detail_s3_object_key
+            S3Bucket    = var.source_s3_bucket_id
+            S3ObjectKey = var.source_s3_object_key
           }
         }
       }
     },
+
     {
       name = "deploy"
       actions = {
-        ecs = {
-          category = "Deploy"
+        codebuild = {
+          category = "Build"
           owner    = "AWS"
-          provider = "ECS"
+          provider = "CodeBuild"
           version  = "1"
 
           input_artifacts  = ["source"]
           output_artifacts = []
 
           configuration = {
-            ClusterName       = var.ecs_cluster_name
-            ServiceName       = var.ecs_service_name
-            DeploymentTimeout = var.ecs_deployment_timeout
-            FileName          = "imagedefinitions.json"
+            ProjectName = module.codebuild.project_name
           }
         }
       }

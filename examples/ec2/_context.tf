@@ -1,6 +1,6 @@
 ## ----------------------------------------------------------------------------
 ##  Copyright 2023 SevenPico, Inc.
-##  Copyright 2020 Cloud Posse, LLC
+##  Copyright 2020-2022 Cloud Posse, LLC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  _context.tf
-##
-##  Copied and adapted from terraform-null-label (https://github.com/cloudposse/terraform-null-label/blob/master/exports/context.tf)
+##  ./_context.tf
+##  This file contains code modified by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
 #
-# ONLY EDIT THIS FILE IN github.com/SevenPico/terraform-null-context
+# ONLY EDIT THIS FILE IN github.com/cloudposse/terraform-null-label
 # All other instances of this file should be a copy of that one
 #
 #
@@ -44,7 +43,7 @@
 #
 
 module "context" {
-  source  = "registry.terraform.io/SevenPico/context/null"
+  source  = "SevenPico/context/null"
   version = "2.0.0" # requires Terraform >= 0.13.0
 
   enabled             = var.enabled

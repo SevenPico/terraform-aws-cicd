@@ -1,0 +1,13 @@
+---
+schemaVersion: "2.2"
+description: Hello world.
+parameters:
+mainSteps:
+  - action: aws:runShellScript
+    name: echoHelloWorld
+    inputs:
+      timeoutSeconds: '300'
+      runCommand:
+        - |
+          #!/bin/bash
+          echo "Hello World"

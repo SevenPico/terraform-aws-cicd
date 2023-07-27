@@ -15,41 +15,27 @@
 ## ----------------------------------------------------------------------------
 
 ## ----------------------------------------------------------------------------
-##  ./_outputs.tf
+##  ./examples/complete/_data.tf
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 
-output "kms_key_arn" {
-  value       = module.kms_key.key_arn
-  description = "Key ARN"
+# The AWS region currently being used.
+data "aws_region" "current" {
+  count = module.context.enabled ? 1 : 0
 }
 
-output "kms_key_id" {
-  value       = module.kms_key.key_id
-  description = "Key ID"
+# The AWS account id
+data "aws_caller_identity" "current" {
+  count = module.context.enabled ? 1 : 0
 }
 
-output "kms_key_alias_arn" {
-  value       = module.kms_key.alias_arn
-  description = "Alias ARN"
+# The AWS partition (commercial or govcloud)
+data "aws_partition" "current" {
+  count = module.context.enabled ? 1 : 0
 }
 
-output "kms_key_alias_name" {
-  value       = module.kms_key.alias_name
-  description = "Alias name"
-}
-
-output "ecs_pipelines_names_map" {
-  value = { for k, v in module.ecs_pipeline : k => v.id }
-}
-
-output "s3_pipelines_names_map" {
-  value = { for k, v in module.s3_pipeline : k => v.id }
-}
-
-output "ecs_target_version_ssm_parameter_names_map" {
-  value = local.ecs_target_version_ssm_parameter_names_map
-}
-output "s3_target_version_ssm_parameter_names_map" {
-  value = local.s3_target_version_ssm_parameter_names_map
+locals {
+  arn_prefix = "arn:${try(data.aws_partition.current[0].partition, "")}"
+  account_id = try(data.aws_caller_identity.current[0].account_id, "")
+  region     = try(data.aws_region.current[0].name, "")
 }

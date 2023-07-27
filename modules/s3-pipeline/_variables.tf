@@ -51,9 +51,9 @@ variable "pre_deploy_buildspec" {
 
 variable "pre_deploy_environment_variables" {
   type = list(object({
-      name  = string
-      value = string
-      type  = string
+    name  = string
+    value = string
+    type  = string
     }
   ))
 

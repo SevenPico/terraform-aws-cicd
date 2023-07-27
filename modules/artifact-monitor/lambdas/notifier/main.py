@@ -34,6 +34,8 @@ def lambda_handler(event, context):
         artifact, version = e['repository_name'], e['tag']
     elif type == 'S3':
         artifact, version = get_artifact_name_version(os.path.basename(e['key']), config.artifact_regex)
+    elif type == 'CLOUFORMATION':
+        artifact, version = get_artifact_name_version(os.path.basename(e['key']), config.artifact_regex)
     else:
         artifact, version  = '', ''
 

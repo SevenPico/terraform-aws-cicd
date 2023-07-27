@@ -24,7 +24,7 @@ module "cicd" {
   context = module.context.self
   name    = "cicd"
 
-  artifact_bucket_id     = module.artifact_bucket.bucket_id
+  #artifact_bucket_id     = module.artifact_bucket.bucket_id
   artifact_sns_topic_arn = module.artifact_monitor.sns_topic_arn
 
   ecs_targets = {
@@ -42,20 +42,22 @@ module "cicd" {
 
   s3_targets = {
     foo = {
-      source_s3_bucket_id  = module.artifact_bucket.bucket_id
-      source_s3_object_key = "sites/foo/foo-latest.zip"
-      target_s3_bucket_id  = module.site_bucket["foo"].bucket_id
+      source_s3_bucket_id    = module.artifact_bucket.bucket_id
+      source_s3_object_key   = "sites/foo/foo-latest.zip"
+      target_s3_bucket_id    = module.site_bucket["foo"].s3_origin_bucket_id
+      ssm_artifact_uri_value = ""
       pre_deploy = {
         buildspec   = "deployspec.yml"
-        permissions = []
+        policy_docs = []
         env_vars    = []
       }
     }
     bar = {
-      source_s3_bucket_id  = module.artifact_bucket.bucket_id
-      source_s3_object_key = "sites/bar/bar-latest.zip"
-      target_s3_bucket_id  = module.site_bucket["bar"].bucket_id
-      pre_deploy           = null
+      source_s3_bucket_id    = module.artifact_bucket.bucket_id
+      source_s3_object_key   = "sites/bar/bar-latest.zip"
+      target_s3_bucket_id    = module.site_bucket["bar"].s3_origin_bucket_id
+      ssm_artifact_uri_value = ""
+      pre_deploy             = null
     }
   }
 }
