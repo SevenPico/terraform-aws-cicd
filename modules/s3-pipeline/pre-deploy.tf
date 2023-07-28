@@ -52,9 +52,8 @@
 # Codebuild Project
 # -----------------------------------------------------------------------------
 module "pre_deploy_codebuild" {
-  #  source     = "registry.terraform.io/SevenPico/codebuild/aws"
-  #  version    = "2.0.0"
-  source     = "git::https://github.com/SevenPico/terraform-aws-codebuild.git?ref=hotfix/2.0.1"
+  source     = "registry.terraform.io/SevenPico/codebuild/aws"
+  version    = "2.0.2"
   context    = module.context.self
   enabled    = module.context.enabled && var.pre_deploy_enabled
   attributes = ["pre-deploy"]
