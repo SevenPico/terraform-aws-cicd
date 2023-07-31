@@ -227,20 +227,20 @@ module "deployer_lambda_policy" {
       ]
     }
     "S3GetArtifact" = {
-      effect  = "Allow"
-      actions = ["s3:Get*"]
+      effect    = "Allow"
+      actions   = ["s3:Get*"]
       resources = ["*"]
-#      resources = concat(
-#        [
-#          for target in values(var.s3_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
-#        ],
-#        [
-#          for target in values(var.cloudformation_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
-#        ],
-#        [
-#          for target in values(var.ec2_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
-#        ]
-#      )
+      #      resources = concat(
+      #        [
+      #          for target in values(var.s3_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+      #        ],
+      #        [
+      #          for target in values(var.cloudformation_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+      #        ],
+      #        [
+      #          for target in values(var.ec2_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
+      #        ]
+      #      )
     }
   }
 }

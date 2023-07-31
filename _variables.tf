@@ -58,6 +58,16 @@ variable "cloudformation_targets" {
     source_s3_object_key = string
     stack_name           = string
     template_name        = string
+    pre_deploy = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
   }))
   default = {}
 }
