@@ -27,6 +27,24 @@ module "pipeline" {
         }
       }
     },
+    var.pre_deploy_enabled ? {
+        name = "pre-deploy"
+        actions = {
+          codebuild = {
+            category = "Build"
+            owner    = "AWS"
+            provider = "CodeBuild"
+            version  = "1"
+
+            input_artifacts  = ["source"]
+            output_artifacts = ["pre-deploy"]
+
+            configuration = {
+              ProjectName = module.pre_deploy_codebuild.project_name
+            }
+          }
+        }
+      } : null,
     {
       name = "deploy"
       actions = {
