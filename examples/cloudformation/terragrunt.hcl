@@ -28,7 +28,7 @@ locals {
 
   namespace   = "brim"
   project     = "cf-cicd" //replace(basename(get_repo_root()), "teraform-", "")
-  environment = "cf-cicd"
+  environment = ""
   stage       = basename(get_terragrunt_dir()) //
   domain_name = "${local.stage}.${local.project}.${local.root_domain}"
 
