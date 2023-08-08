@@ -62,3 +62,7 @@ output "cloudformation_target_version_ssm_parameter_names_map" {
 output "ec2_target_version_ssm_parameter_names_map" {
   value = local.ec2_target_version_ssm_parameter_names_map
 }
+
+output "ec2_target_version_ssm_parameter_arns_map" {
+  value = local.ec2_target_version_ssm_parameter_arns_map
+}
