@@ -50,6 +50,19 @@ output "s3_pipelines_names_map" {
 output "ecs_target_version_ssm_parameter_names_map" {
   value = local.ecs_target_version_ssm_parameter_names_map
 }
+
 output "s3_target_version_ssm_parameter_names_map" {
   value = local.s3_target_version_ssm_parameter_names_map
+}
+
+output "cloudformation_target_version_ssm_parameter_names_map" {
+  value = local.cf_target_version_ssm_parameter_names_map
+}
+
+output "ec2_target_version_ssm_parameter_names_map" {
+  value = local.ec2_target_version_ssm_parameter_names_map
+}
+
+output "ec2_target_version_ssm_parameter_arns_map" {
+  value = local.ec2_target_version_ssm_parameter_arns_map
 }
