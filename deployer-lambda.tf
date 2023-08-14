@@ -34,10 +34,11 @@ module "deployer_context" {
 # Artifact Bucket for use by Deployer Lambda and Pipelines
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
-  source     = "SevenPicoForks/s3-bucket/aws"
-  version    = "4.0.4"
-  context    = module.deployer_context.self
-  attributes = ["artifacts"]
+  source          = "SevenPicoForks/s3-bucket/aws"
+  version         = "4.0.6"
+  context         = module.deployer_context.self
+  attributes      = ["artifacts"]
+  id_length_limit = 63
 
   acl                           = "private"
   allow_encrypted_uploads_only  = var.allow_encrypted_uploads_only
