@@ -38,7 +38,7 @@ module "deployer_artifacts_bucket" {
   version         = "4.0.4"
   context         = module.deployer_context.self
   attributes      = ["artifacts"]
-  id_length_limit = 0
+  id_length_limit = 63
 
   acl                           = "private"
   allow_encrypted_uploads_only  = var.allow_encrypted_uploads_only
