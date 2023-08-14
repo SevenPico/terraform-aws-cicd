@@ -35,7 +35,7 @@ module "deployer_context" {
 # ------------------------------------------------------------------------------
 module "deployer_artifacts_bucket" {
   source          = "SevenPicoForks/s3-bucket/aws"
-  version         = "4.0.4"
+  version         = "4.0.6"
   context         = module.deployer_context.self
   attributes      = ["artifacts"]
   id_length_limit = 63
