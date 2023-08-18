@@ -68,5 +68,5 @@ output "ec2_target_version_ssm_parameter_arns_map" {
 }
 
 output "deployer_artifacts_bucket_name" {
-  value = module.deployer_artifacts_bucket.id
+  value = module.deployer_artifacts_bucket.bucket_id
 }
