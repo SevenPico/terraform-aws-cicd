@@ -72,7 +72,7 @@ module "pipeline" {
               ParameterOverrides = var.cloudformation_parameter_overrides
               RoleArn            = var.cloudformation_role_arn
               StackName          = var.cloudformation_stack_name
-              TemplatePath       = "source::${var.cloudformation_template_name}"
+              TemplatePath       = "pre-deploy::${var.cloudformation_template_name}"
             }
           }
         }
