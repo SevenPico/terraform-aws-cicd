@@ -62,7 +62,7 @@ module "pipeline" {
             provider = "CloudFormation"
             version  = "1"
 
-            input_artifacts  = ["source"]
+            input_artifacts  = ["pre-deploy"]
             output_artifacts = []
 
             configuration = {
