@@ -10,10 +10,6 @@ variable "cloudwatch_log_expiration_days" {
   default = 90
 }
 
-variable "s3_access_log_storage_bucket_id" {
-  type = string
-}
-
 variable "kms_key_deletion_window_in_days" {
   type    = number
   default = 7
