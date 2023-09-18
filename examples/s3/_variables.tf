@@ -1,28 +1,8 @@
 variable "root_domain" {}
 
-variable "route53_parent_zone_id" {
-  type = string
-}
-
-variable "artifact_sns_topic_arn" {
-  type = string
-}
-
-variable "artifact_s3_bucket_id" {
-  type = string
-}
-
-variable "artifact_s3_object_key" {
-  type = string
-}
-
 variable "cors_allowed_origins" {
   type    = list(string)
   default = []
-}
-
-variable "cloudfront_access_log_storage_bucket_id" {
-  type = string
 }
 
 variable "cloudwatch_log_expiration_days" {

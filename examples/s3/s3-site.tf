@@ -27,6 +27,39 @@ module "site" {
     aws_route53_zone.public
   ]
 
+  access_log_bucket_name = ""
+  additional_bucket_policy = ""
+  additional_tag_map = {}
+  aliases = []
+  allow_ssl_requests_only = true
+  allowed_methods = ["GET","HEAD"]
+  block_origin_public_access_enabled = true
+  cache_policy_id = ""
+  cached_methods = []
+  cloudfront_access_log_create_bucket = false
+  cloudfront_access_log_bucket_name = ""
+  cloudfront_access_log_include_cookies = false
+  cloudfront_access_log_prefix = ""
+  cloudfront_origin_access_identity_iam_arn = ""
+  cloudfront_origin_access_identity_path = ""
+  comment = ""
+  compress = true
+  cors_allowed_headers = []
+  cors_allowed_methods = []
+  cors_expose_headers = []
+  cors_max_age_seconds = 365800
+  custom_origin_headers = []
+  custom_origins = []
+  default_ttl = 300
+  http_version = "http2"
+  deployment_actions = []
+  distribution_enabled = true
+  dns_allow_overwrite = false
+  encryption_enabled = false
+  minimum_protocol_version = ""
+  website_enabled = true
+  versioning_enabled = true
+
   acm_certificate_arn                     = module.ssl_certificate.acm_certificate_arn
   cors_allowed_origins                    = var.cors_allowed_origins
   geo_restriction_locations               = var.geo_restriction_locations
