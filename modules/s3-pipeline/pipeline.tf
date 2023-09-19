@@ -84,7 +84,7 @@ module "pipeline" {
             provider = "S3"
             version  = "1"
 
-            input_artifacts  = ["pre-deploy","source"]
+            input_artifacts  = var.pre_deploy_enabled ? ["pre-deploy"] : ["source"]
             output_artifacts = []
 
             configuration = {
