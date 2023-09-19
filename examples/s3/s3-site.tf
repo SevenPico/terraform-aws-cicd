@@ -19,9 +19,8 @@
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 module "site" {
-  #  source  = "registry.terraform.io/SevenPico/s3-website/aws"
-  #  version = "2.0.1"
-  source  = "./module/cdn/"
+  source  = "cloudposse/cloudfront-s3-cdn/aws"
+  version = "0.92.0"
   context = module.context.self
   depends_on = [
     aws_route53_zone.public
