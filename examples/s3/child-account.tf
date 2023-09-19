@@ -37,6 +37,5 @@ module "cicd" {
       ssm_artifact_uri_value = ""
       pre_deploy = null
     }
-    }
   }
 }
