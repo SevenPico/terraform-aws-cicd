@@ -62,7 +62,7 @@ module "site" {
   acm_certificate_arn       = module.ssl_certificate.acm_certificate_arn
   cors_allowed_origins      = var.cors_allowed_origins
   geo_restriction_locations = var.geo_restriction_locations
-  parent_zone_id            = aws_route53_zone.public[0].zone_id
+  parent_zone_id            = try(aws_route53_zone.public[0].zone_id, "")
   #  tls_protocol_version                    = var.tls_protocol_version
 
   #  additional_aliases                = []
