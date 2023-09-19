@@ -21,7 +21,7 @@
 
 module "artifact_bucket" {
   source     = "SevenPicoForks/s3-bucket/aws"
-  version    = "4.0.1"
+  version    = "4.0.6"
   context    = module.context.self
   attributes = ["artifacts"]
 }
