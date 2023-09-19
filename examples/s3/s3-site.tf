@@ -36,7 +36,7 @@ module "site" {
   block_origin_public_access_enabled = true
   cache_policy_id = ""
   cached_methods = []
-  cloudfront_access_log_create_bucket = false
+  cloudfront_access_log_create_bucket = true
   cloudfront_access_log_bucket_name = ""
   cloudfront_access_log_include_cookies = false
   cloudfront_access_log_prefix = ""
