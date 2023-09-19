@@ -32,14 +32,14 @@ module "ssl_certificate_context" {
 # SSL Certificate
 # ------------------------------------------------------------------------------
 module "ssl_certificate" {
-#  source     = "registry.terraform.io/SevenPico/ssl-certificate/aws"
-#  version    = "8.0.11"
-  source = "git::https://github.com/SevenPico/terraform-aws-ssl-certificate.git?ref=hotfix/8.0.12"
+  #  source     = "registry.terraform.io/SevenPico/ssl-certificate/aws"
+  #  version    = "8.0.11"
+  source  = "git::https://github.com/SevenPico/terraform-aws-ssl-certificate.git?ref=hotfix/8.0.12"
   context = module.ssl_certificate_context.self
 
   replica_regions = []
   kms_key_id      = ""
-#  kms_key_enabled = true
+  #  kms_key_enabled = true
 
   save_csr                            = false
   additional_dns_names                = []
@@ -57,8 +57,8 @@ module "ssl_certificate" {
   keyname_certificate_signing_request = "CERTIFICATE_SIGNING_REQUEST"
   keyname_private_key                 = "CERTIFICATE_PRIVATE_KEY"
   registration_email_address          = ""
-  secret_read_principals = {}
-  secret_update_sns_pub_principals = {}
-  secret_update_sns_sub_principals = {}
-  zone_id                          = null
+  secret_read_principals              = {}
+  secret_update_sns_pub_principals    = {}
+  secret_update_sns_sub_principals    = {}
+  zone_id                             = null
 }
