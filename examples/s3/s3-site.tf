@@ -63,15 +63,11 @@ module "site" {
   cors_allowed_origins      = var.cors_allowed_origins
   geo_restriction_locations = var.geo_restriction_locations
   parent_zone_id            = try(aws_route53_zone.public[0].zone_id, "")
-  #  tls_protocol_version                    = var.tls_protocol_version
 
-  #  additional_aliases                = []
   cloudfront_access_logging_enabled = true
   deployment_principal_arns         = {}
   dns_alias_enabled                 = true
   geo_restriction_type              = "blacklist"
-  s3_object_ownership               = "BucketOwnerEnforced"
-  #  waf_enabled                       = false
   default_root_object = var.default_root_object
   custom_error_response = [{
     error_caching_min_ttl = 10,
