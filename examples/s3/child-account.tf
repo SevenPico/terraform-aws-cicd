@@ -33,7 +33,7 @@ module "cicd" {
     foo = {
       source_s3_bucket_id    = module.artifact_bucket.bucket_id
       source_s3_object_key   = "sites/foo/foo-latest.zip"
-      target_s3_bucket_id    = module.site.s3_bucket
+      target_s3_bucket_id    = module.site.s3_bucket_name
       ssm_artifact_uri_value = ""
       pre_deploy             = null
     }
