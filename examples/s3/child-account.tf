@@ -31,6 +31,7 @@ module "cicd" {
   create_kms_key                  = true
   kms_key_deletion_window_in_days = 30
   kms_key_enable_key_rotation     = true
+  overwrite_ssm_parameters        = false
   s3_targets = {
     foo = {
       source_s3_bucket_id    = module.artifact_bucket.bucket_id
