@@ -26,35 +26,35 @@ module "site" {
     aws_route53_zone.public
   ]
 
-  s3_access_log_bucket_name                    = ""
-  additional_bucket_policy                  = {}
-  additional_tag_map                        = {}
-  aliases                                   = []
-  allow_ssl_requests_only                   = true
-  allowed_methods                           = ["GET", "HEAD"]
-  block_origin_public_access_enabled        = true
-  cache_policy_id                           = ""
-  cached_methods                            = ["GET", "HEAD"]
-  cloudfront_access_log_create_bucket       = true
-  cloudfront_access_log_include_cookies     = false
-  compress                                  = true
-  cors_allowed_headers                      = []
-  cors_allowed_methods                      = []
-  cors_expose_headers                       = []
-  cors_max_age_seconds                      = 3600
-  custom_origin_headers                     = []
-  custom_origins                            = []
-  default_ttl                               = 60
-  http_version                              = "http2"
-  distribution_enabled                      = true
-  dns_allow_overwrite                       = false
-  encryption_enabled                        = false
-  minimum_protocol_version                  = "TLSv2"
-  website_enabled                           = true
-  versioning_enabled                        = true
-  index_document                            = "index.html"
-  logging_enabled                           = false
-  viewer_protocol_policy                    = "https-only"
+  s3_access_log_bucket_name             = ""
+  additional_bucket_policy              = "{}"
+  additional_tag_map                    = {}
+  aliases                               = []
+  allow_ssl_requests_only               = true
+  allowed_methods                       = ["GET", "HEAD"]
+  block_origin_public_access_enabled    = true
+  cache_policy_id                       = ""
+  cached_methods                        = ["GET", "HEAD"]
+  cloudfront_access_log_create_bucket   = true
+  cloudfront_access_log_include_cookies = false
+  compress                              = true
+  cors_allowed_headers                  = []
+  cors_allowed_methods                  = []
+  cors_expose_headers                   = []
+  cors_max_age_seconds                  = 3600
+  custom_origin_headers                 = []
+  custom_origins                        = []
+  default_ttl                           = 60
+  http_version                          = "http2"
+  distribution_enabled                  = true
+  dns_allow_overwrite                   = false
+  encryption_enabled                    = false
+  minimum_protocol_version              = "TLSv2"
+  website_enabled                       = true
+  versioning_enabled                    = true
+  index_document                        = "index.html"
+  logging_enabled                       = false
+  viewer_protocol_policy                = "https-only"
 
 
   acm_certificate_arn       = module.ssl_certificate.acm_certificate_arn
@@ -66,7 +66,7 @@ module "site" {
   deployment_principal_arns         = {}
   dns_alias_enabled                 = true
   geo_restriction_type              = "blacklist"
-  default_root_object = var.default_root_object
+  default_root_object               = var.default_root_object
   custom_error_response = [{
     error_caching_min_ttl = 10,
     error_code            = 404,
