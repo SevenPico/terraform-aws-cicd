@@ -19,52 +19,22 @@
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 module "site" {
-  source  = "cloudposse/cloudfront-s3-cdn/aws"
-  version = "0.92.0"
-  context = module.context.self
-  depends_on = [
-    aws_route53_zone.public
-  ]
+  source                  = "cloudposse/s3-website/aws"
+  version                 = "0.18.0"
+  context                 = module.context.self
 
-  s3_access_log_bucket_name             = ""
-  additional_bucket_policy              = "{}"
-  additional_tag_map                    = {}
-  aliases                               = []
-  allow_ssl_requests_only               = true
-  allowed_methods                       = ["GET", "HEAD"]
-  block_origin_public_access_enabled    = true
-  cached_methods                        = ["GET", "HEAD"]
-  cloudfront_access_log_create_bucket   = true
-  cors_max_age_seconds                  = 3600
-  default_ttl                           = 60
-  http_version                          = "http2"
-  distribution_enabled                  = true
-  dns_allow_overwrite                   = false
-  encryption_enabled                    = false
-  minimum_protocol_version              = "TLSv1.2_2021"
-  website_enabled                       = true
-  versioning_enabled                    = false
-  index_document                        = "index.html"
-  logging_enabled                       = false
-  viewer_protocol_policy                = "https-only"
+  hostname                = module.context.domain_name
 
+  allow_ssl_requests_only = true
+  deployment_arns         = {}
+  encryption_enabled      = true
+  force_destroy           = true
+  lifecycle_rule_enabled  = false
+  logs_enabled            = false
+  index_document          = "index.html"
+  parent_zone_id          = try(aws_route53_zone.public[0].zone_id, "")
+  parent_zone_name        = try(aws_route53_zone.public[0].name, "")
 
-  acm_certificate_arn       = module.ssl_certificate.acm_certificate_arn
-  cors_allowed_origins      = var.cors_allowed_origins
-  geo_restriction_locations = var.geo_restriction_locations
-  parent_zone_id            = try(aws_route53_zone.public[0].zone_id, "")
-
-  cloudfront_access_logging_enabled = true
-  deployment_principal_arns         = {}
-  dns_alias_enabled                 = true
-  geo_restriction_type              = "blacklist"
-  default_root_object               = var.default_root_object
-  custom_error_response = [{
-    error_caching_min_ttl = 10,
-    error_code            = 404,
-    response_code         = 404,
-    response_page_path    = var.error_response_page_path
-  }]
 }
 
 
