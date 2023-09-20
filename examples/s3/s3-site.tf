@@ -51,7 +51,7 @@ module "site" {
   encryption_enabled                    = false
   minimum_protocol_version              = "TLSv1.2_2021"
   website_enabled                       = true
-  versioning_enabled                    = true
+  versioning_enabled                    = false
   index_document                        = "index.html"
   logging_enabled                       = false
   viewer_protocol_policy                = "https-only"
