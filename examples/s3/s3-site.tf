@@ -26,38 +26,36 @@ module "site" {
     aws_route53_zone.public
   ]
 
-  access_log_bucket_name                    = ""
-  additional_bucket_policy                  = ""
+  s3_access_log_bucket_name                    = ""
+  additional_bucket_policy                  = {}
   additional_tag_map                        = {}
   aliases                                   = []
-  allow_ssl_requests_only                   = false
+  allow_ssl_requests_only                   = true
   allowed_methods                           = ["GET", "HEAD"]
   block_origin_public_access_enabled        = true
   cache_policy_id                           = ""
-  cached_methods                            = []
+  cached_methods                            = ["GET", "HEAD"]
   cloudfront_access_log_create_bucket       = true
-  cloudfront_access_log_bucket_name         = ""
   cloudfront_access_log_include_cookies     = false
-  cloudfront_access_log_prefix              = ""
-  cloudfront_origin_access_identity_iam_arn = ""
-  cloudfront_origin_access_identity_path    = ""
-  comment                                   = "Foo site test"
   compress                                  = true
   cors_allowed_headers                      = []
   cors_allowed_methods                      = []
   cors_expose_headers                       = []
-  cors_max_age_seconds                      = 365800
+  cors_max_age_seconds                      = 3600
   custom_origin_headers                     = []
   custom_origins                            = []
-  default_ttl                               = 300
+  default_ttl                               = 60
   http_version                              = "http2"
-  deployment_actions                        = []
   distribution_enabled                      = true
   dns_allow_overwrite                       = false
   encryption_enabled                        = false
-  minimum_protocol_version                  = ""
+  minimum_protocol_version                  = "TLSv2"
   website_enabled                           = true
   versioning_enabled                        = true
+  index_document                            = "index.html"
+  logging_enabled                           = false
+  viewer_protocol_policy                    = "https-only"
+
 
   acm_certificate_arn       = module.ssl_certificate.acm_certificate_arn
   cors_allowed_origins      = var.cors_allowed_origins
