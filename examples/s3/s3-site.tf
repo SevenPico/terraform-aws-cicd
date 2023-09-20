@@ -49,7 +49,7 @@ module "site" {
   distribution_enabled                  = true
   dns_allow_overwrite                   = false
   encryption_enabled                    = false
-  minimum_protocol_version              = "TLSv2"
+  minimum_protocol_version              = "TLSv1.2_2021"
   website_enabled                       = true
   versioning_enabled                    = true
   index_document                        = "index.html"
