@@ -27,8 +27,10 @@ module "cicd" {
   #artifact_bucket_id     = module.artifact_bucket.bucket_id
   artifact_sns_topic_arn = module.artifact_monitor.sns_topic_arn
 
-  ecs_targets = {}
-
+  ecs_targets                     = {}
+  create_kms_key                  = true
+  kms_key_deletion_window_in_days = 30
+  kms_key_enable_key_rotation     = true
   s3_targets = {
     foo = {
       source_s3_bucket_id    = module.artifact_bucket.bucket_id

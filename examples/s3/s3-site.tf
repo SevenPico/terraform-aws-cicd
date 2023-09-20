@@ -19,11 +19,11 @@
 ##  This file contains code written by SevenPico, Inc.
 ## ----------------------------------------------------------------------------
 module "site" {
-  source                  = "cloudposse/s3-website/aws"
-  version                 = "0.18.0"
-  context                 = module.context.self
+  source  = "cloudposse/s3-website/aws"
+  version = "0.18.0"
+  context = module.context.self
 
-  hostname                = module.context.domain_name
+  hostname = module.context.domain_name
 
   allow_ssl_requests_only = true
   deployment_arns         = {}
