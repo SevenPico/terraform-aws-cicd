@@ -33,17 +33,9 @@ module "site" {
   allow_ssl_requests_only               = true
   allowed_methods                       = ["GET", "HEAD"]
   block_origin_public_access_enabled    = true
-  cache_policy_id                       = ""
   cached_methods                        = ["GET", "HEAD"]
   cloudfront_access_log_create_bucket   = true
-  cloudfront_access_log_include_cookies = false
-  compress                              = true
-  cors_allowed_headers                  = []
-  cors_allowed_methods                  = []
-  cors_expose_headers                   = []
   cors_max_age_seconds                  = 3600
-  custom_origin_headers                 = []
-  custom_origins                        = []
   default_ttl                           = 60
   http_version                          = "http2"
   distribution_enabled                  = true
