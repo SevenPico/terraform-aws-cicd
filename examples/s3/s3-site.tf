@@ -33,7 +33,7 @@ module "site" {
   lifecycle_rule_enabled  = false
   logs_enabled            = false
   index_document          = "index.html"
-  parent_zone_id          = try(aws_route53_zone.public[0].zone_id, "")
+  parent_zone_id          = ""
 
 }
 
