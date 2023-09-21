@@ -22,6 +22,7 @@ module "site" {
   source  = "cloudposse/s3-website/aws"
   version = "0.18.0"
   context = module.context.self
+  depends_on = [aws_route53_record.ns,aws_route53_zone.public]
 
   hostname = module.context.domain_name
 
