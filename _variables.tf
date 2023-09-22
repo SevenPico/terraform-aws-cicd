@@ -51,6 +51,7 @@ variable "s3_targets" {
 variable "cloudformation_targets" {
   type = map(object({
     action_mode          = string
+    file_type            = string
     capabilities         = string
     parameter_overrides  = string
     role_arn             = string

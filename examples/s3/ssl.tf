@@ -39,7 +39,6 @@ module "ssl_certificate" {
 
   replica_regions = []
   kms_key_id      = ""
-  #  kms_key_enabled = true
 
   save_csr                            = false
   additional_dns_names                = []

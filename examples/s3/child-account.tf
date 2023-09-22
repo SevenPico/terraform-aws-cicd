@@ -24,7 +24,6 @@ module "cicd" {
   context = module.context.self
   name    = "cicd"
 
-  #artifact_bucket_id     = module.artifact_bucket.bucket_id
   artifact_sns_topic_arn = module.artifact_monitor.sns_topic_arn
 
   ecs_targets                     = {}
