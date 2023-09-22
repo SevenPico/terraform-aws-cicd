@@ -32,9 +32,8 @@ module "ssl_certificate_context" {
 # SSL Certificate
 # ------------------------------------------------------------------------------
 module "ssl_certificate" {
-  #  source     = "registry.terraform.io/SevenPico/ssl-certificate/aws"
-  #  version    = "8.0.11"
-  source  = "git::https://github.com/SevenPico/terraform-aws-ssl-certificate.git?ref=hotfix/8.0.12"
+  source     = "registry.terraform.io/SevenPico/ssl-certificate/aws"
+  version    = "8.0.12"
   context = module.ssl_certificate_context.self
 
   replica_regions = []
