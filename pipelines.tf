@@ -131,8 +131,8 @@ module "ec2_pipeline" {
   build_policy_docs              = try(each.value.build.policy_docs, [])
   buildspec                      = try(each.value.build.buildspec, "deployspec.yml")
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-  source_s3_bucket_id            = each.value.source_s3_bucket_id
-  source_s3_object_key           = each.value.source_s3_object_key
+  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id #each.value.source_s3_bucket_id
+  source_s3_object_key           = "${module.context.id}/ec2/${each.key}.${each.value.file_type}" #each.value.source_s3_object_key
 }
 
 
