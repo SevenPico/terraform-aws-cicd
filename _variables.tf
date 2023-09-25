@@ -24,12 +24,14 @@ variable "ecs_targets" {
     image_uri        = string
     ecs_cluster_name = string
     ecs_service_name = string
+    file_type        = string
   }))
   default = {}
 }
 
 variable "s3_targets" {
   type = map(object({
+    file_type              = string
     source_s3_bucket_id    = string
     source_s3_object_key   = string
     target_s3_bucket_id    = string
