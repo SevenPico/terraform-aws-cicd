@@ -62,7 +62,7 @@ module "pipeline" {
             provider = "CloudFormation"
             version  = "1"
 
-            input_artifacts  = ["pre-deploy"]
+            input_artifacts  = var.pre_deploy_enabled ? ["pre-deploy"] : ["source"]
             output_artifacts = []
 
             configuration = {
@@ -72,7 +72,7 @@ module "pipeline" {
               ParameterOverrides = var.cloudformation_parameter_overrides
               RoleArn            = var.cloudformation_role_arn
               StackName          = var.cloudformation_stack_name
-              TemplatePath       = "pre-deploy::${var.cloudformation_template_name}"
+              TemplatePath       = var.pre_deploy_enabled ? "pre-deploy::${var.cloudformation_template_name}" : "source::${var.cloudformation_template_name}"
             }
           }
         }
