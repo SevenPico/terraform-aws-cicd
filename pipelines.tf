@@ -55,7 +55,7 @@ module "ecs_pipeline" {
   ecs_service_name               = each.value.ecs_service_name
   ecs_deployment_timeout         = var.ecs_deployment_timeout
   image_detail_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  image_detail_s3_object_key     = "${module.context.id}/ecs/${each.key}.zip"
+  image_detail_s3_object_key     = "${module.context.id}/ecs/${each.key}.${each.value.file_type}"
 }
 
 
@@ -72,8 +72,8 @@ module "s3_pipeline" {
   artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = 90
-  source_s3_bucket_id            = each.value.source_s3_bucket_id
-  source_s3_object_key           = each.value.source_s3_object_key
+  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id #each.value.source_s3_bucket_id
+  source_s3_object_key           =  "${module.context.id}/s3/${each.key}.${each.value.file_type}" #each.value.source_s3_object_key
   target_s3_bucket_id            = each.value.target_s3_bucket_id
 
   pre_deploy_enabled               = (each.value.pre_deploy != null)
@@ -98,13 +98,19 @@ module "cf_pipeline" {
   artifact_store_s3_bucket_id        = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days     = 90
   source_s3_bucket_id                = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key               = "${module.context.id}/cloudformation/${each.key}.zip"
+  source_s3_object_key               = "${module.context.id}/cloudformation/${each.key}.${each.value.file_type}"
   cloudformation_action_mode         = each.value.action_mode
   cloudformation_capabilities        = each.value.capabilities
   cloudformation_role_arn            = each.value.role_arn
   cloudformation_stack_name          = each.value.stack_name
   cloudformation_template_name       = each.value.template_name
   cloudformation_parameter_overrides = each.value.parameter_overrides
+
+  pre_deploy_enabled               = (each.value.pre_deploy != null)
+  pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
+  pre_deploy_policy_docs           = try(each.value.pre_deploy.policy_docs, [])
+  pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
+  build_image                      = var.build_image
 }
 
 
@@ -125,8 +131,8 @@ module "ec2_pipeline" {
   build_policy_docs              = try(each.value.build.policy_docs, [])
   buildspec                      = try(each.value.build.buildspec, "deployspec.yml")
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-  source_s3_bucket_id            = each.value.source_s3_bucket_id
-  source_s3_object_key           = each.value.source_s3_object_key
+  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id #each.value.source_s3_bucket_id
+  source_s3_object_key           = "${module.context.id}/ec2/${each.key}.${each.value.file_type}" #each.value.source_s3_object_key
 }
 
 

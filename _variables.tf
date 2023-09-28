@@ -24,12 +24,14 @@ variable "ecs_targets" {
     image_uri        = string
     ecs_cluster_name = string
     ecs_service_name = string
+    file_type        = string
   }))
   default = {}
 }
 
 variable "s3_targets" {
   type = map(object({
+    file_type              = string
     source_s3_bucket_id    = string
     source_s3_object_key   = string
     target_s3_bucket_id    = string
@@ -51,6 +53,7 @@ variable "s3_targets" {
 variable "cloudformation_targets" {
   type = map(object({
     action_mode          = string
+    file_type            = string
     capabilities         = string
     parameter_overrides  = string
     role_arn             = string
@@ -58,6 +61,16 @@ variable "cloudformation_targets" {
     source_s3_object_key = string
     stack_name           = string
     template_name        = string
+    pre_deploy = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
   }))
   default = {}
 }
@@ -66,6 +79,7 @@ variable "ec2_targets" {
   type = map(object({
     source_s3_bucket_id  = string
     source_s3_object_key = string
+    file_type            = string
     build = object({
       buildspec   = string
       policy_docs = list(string)

@@ -66,3 +66,7 @@ output "ec2_target_version_ssm_parameter_names_map" {
 output "ec2_target_version_ssm_parameter_arns_map" {
   value = local.ec2_target_version_ssm_parameter_arns_map
 }
+
+output "deployer_artifacts_bucket_name" {
+  value = module.deployer_artifacts_bucket.bucket_id
+}

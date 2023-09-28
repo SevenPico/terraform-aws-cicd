@@ -61,8 +61,9 @@ module "ec2_pipeline" {
   s3_targets                      = {}
   ec2_targets = {
     ec2 = {
-      source_s3_bucket_id  = module.source_bucket.bucket_id
+      source_s3_bucket_id  = module.artifacts_bucket.bucket_id
       source_s3_object_key = "cicd/ec2/demo.zip"
+      file_type            = "zip"
       build = {
         buildspec   = local.buildspec
         env_vars    = local.buildspec_env_vars
@@ -87,7 +88,7 @@ data "aws_iam_policy_document" "build_access_policy_doc" {
       "s3:Put*"
     ]
     resources = [
-      "${module.source_bucket.bucket_arn}/*",
+      "${module.artifacts_bucket.bucket_arn}/*",
       "arn:aws:s3:::${module.context.id}-cicd-deployer-artifacts/*"
     ]
   }
