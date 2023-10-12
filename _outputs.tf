@@ -47,6 +47,14 @@ output "s3_pipelines_names_map" {
   value = { for k, v in module.s3_pipeline : k => v.id }
 }
 
+output "ec2_pipelines_names_map" {
+  value = { for k, v in module.ec2_pipeline : k => v.id }
+}
+
+output "cloudformation_pipelines_names_map" {
+  value = { for k, v in module.cf_pipeline : k => v.id }
+}
+
 output "ecs_target_version_ssm_parameter_names_map" {
   value = local.ecs_target_version_ssm_parameter_names_map
 }
