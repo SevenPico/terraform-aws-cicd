@@ -29,6 +29,29 @@ variable "ecs_targets" {
   default = {}
 }
 
+variable "ecs_standalone_task_targets" {
+  type = map(object({
+    image_uri        = string
+    file_type        = string
+    build = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
+  }))
+  default = {}
+}
+
+variable "enable_ecs_standalone_task" {
+  type    = bool
+  default = false
+}
+
 variable "s3_targets" {
   type = map(object({
     file_type              = string

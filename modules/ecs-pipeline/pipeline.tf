@@ -48,7 +48,24 @@ module "pipeline" {
         }
       }
     },
-    {
+    var.enable_ecs_standalone_task ? {
+      name = "deploy"
+      actions = {
+        codebuild = {
+          category = "Build"
+          owner    = "AWS"
+          provider = "CodeBuild"
+          version  = "1"
+
+          input_artifacts  = ["source"]
+          output_artifacts = []
+
+          configuration = {
+            ProjectName = module.codebuild.project_name
+          }
+        }
+      }
+    } : {
       name = "deploy"
       actions = {
         ecs = {
