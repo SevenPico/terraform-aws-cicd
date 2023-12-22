@@ -25,14 +25,14 @@
 locals {
   targets = merge(
     { for k, v in var.ecs_targets : "${module.context.id}/ecs/${k}" => v.image_uri },
-    { for k, v in var.ecs_standalone_task_targets : "${module.context.id}/ecs/task/${k}" => v.image_uri },
+    { for k, v in var.ecs_standalone_task_targets : "${module.context.id}/task/ecs/${k}" => v.image_uri },
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
     { for k, v in var.cloudformation_targets : "${module.context.id}/cloudformation/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
     { for k, v in var.ec2_targets : "${module.context.id}/ec2/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
   )
 
   ecs_target_version_ssm_parameter_names_map      = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
-  ecs_task_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_standalone_task_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/task/${k}"].name } : {}
+  ecs_task_target_version_ssm_parameter_names_map = module.context.enabled ? { for k, v in var.ecs_standalone_task_targets : k => aws_ssm_parameter.target_source["${module.context.id}/task/ecs/${k}"].name } : {}
   s3_target_version_ssm_parameter_names_map       = module.context.enabled ? { for k, v in var.s3_targets : k => aws_ssm_parameter.target_source["${module.context.id}/s3/${k}"].name } : {}
   cf_target_version_ssm_parameter_names_map       = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cloudformation/${k}"].name } : {}
   ec2_target_version_ssm_parameter_names_map      = module.context.enabled ? { for k, v in var.ec2_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ec2/${k}"].name } : {}
@@ -76,7 +76,7 @@ module "ecs_task_pipeline" {
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   image_detail_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  image_detail_s3_object_key     = "${module.context.id}/ecs-task/${each.key}.${each.value.file_type}"
+  image_detail_s3_object_key     = "${module.context.id}/task/ecs/${each.key}.${each.value.file_type}"
 
   enable_ecs_standalone_task  = true
   build_environment_variables = try(each.value.build.env_vars, [])
