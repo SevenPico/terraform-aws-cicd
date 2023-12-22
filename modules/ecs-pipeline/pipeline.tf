@@ -26,7 +26,13 @@ module "pipeline" {
   artifact_store_s3_bucket_id    = var.artifact_store_s3_bucket_id
   artifact_store_kms_key_arn     = var.artifact_store_kms_key_arn
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
-  iam_policy_statements          = {}
+  iam_policy_statements = var.enable_ecs_standalone_task ? {
+    codebuild = {
+      effect    = "Allow"
+      actions   = ["codebuild:*"]
+      resources = [module.codebuild.project_arn]
+    }
+  } : {}
 
   stages = [
     {
