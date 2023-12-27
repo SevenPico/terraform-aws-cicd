@@ -57,7 +57,7 @@ module "ecs_pipeline" {
   ecs_service_name               = each.value.ecs_service_name
   ecs_deployment_timeout         = var.ecs_deployment_timeout
   image_detail_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  image_detail_s3_object_key     = "${module.context.id}/ecs/${each.key}.${each.value.file_type}"
+  image_detail_s3_object_key     = "${module.context.id}/ecs/${each.key}.zip"
 }
 
 
@@ -76,7 +76,7 @@ module "ecs_task_pipeline" {
   artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   image_detail_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  image_detail_s3_object_key     = "${module.context.id}/task/ecs/${each.key}.${each.value.file_type}"
+  image_detail_s3_object_key     = "${module.context.id}/task/ecs/${each.key}.zip"
 
   enable_ecs_standalone_task  = true
   build_environment_variables = try(each.value.build.env_vars, [])

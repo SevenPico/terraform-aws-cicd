@@ -24,15 +24,13 @@ variable "ecs_targets" {
     image_uri        = string
     ecs_cluster_name = string
     ecs_service_name = string
-    file_type        = string
   }))
   default = {}
 }
 
 variable "ecs_standalone_task_targets" {
   type = map(object({
-    image_uri        = string
-    file_type        = string
+    image_uri = string
     build = object({
       buildspec   = string
       policy_docs = list(string)
