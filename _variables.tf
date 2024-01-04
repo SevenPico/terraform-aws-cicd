@@ -24,14 +24,34 @@ variable "ecs_targets" {
     image_uri        = string
     ecs_cluster_name = string
     ecs_service_name = string
-    file_type        = string
   }))
   default = {}
 }
 
+variable "ecs_standalone_task_targets" {
+  type = map(object({
+    image_uri = string
+    build = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
+  }))
+  default = {}
+}
+
+variable "enable_ecs_standalone_task" {
+  type    = bool
+  default = false
+}
+
 variable "s3_targets" {
   type = map(object({
-    file_type              = string
     source_s3_bucket_id    = string
     source_s3_object_key   = string
     target_s3_bucket_id    = string
