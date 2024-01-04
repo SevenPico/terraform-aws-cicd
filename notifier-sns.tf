@@ -51,6 +51,7 @@ module "codepipeline_event" {
       pipeline = concat(
         [for p in module.s3_pipeline : p.id],
         [for p in module.ecs_pipeline : p.id],
+        [for p in module.ecs_task_pipeline : p.id],
         [for p in module.cf_pipeline : p.id],
         [for p in module.ec2_pipeline : p.id],
       )

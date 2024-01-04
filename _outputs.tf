@@ -43,6 +43,10 @@ output "ecs_pipelines_names_map" {
   value = { for k, v in module.ecs_pipeline : k => v.id }
 }
 
+output "ecs_task_pipelines_names_map" {
+  value = { for k, v in module.ecs_task_pipeline : k => v.id }
+}
+
 output "s3_pipelines_names_map" {
   value = { for k, v in module.s3_pipeline : k => v.id }
 }
@@ -57,6 +61,10 @@ output "cloudformation_pipelines_names_map" {
 
 output "ecs_target_version_ssm_parameter_names_map" {
   value = local.ecs_target_version_ssm_parameter_names_map
+}
+
+output "ecs_task_target_version_ssm_parameter_names_map" {
+  value = local.ecs_task_target_version_ssm_parameter_names_map
 }
 
 output "s3_target_version_ssm_parameter_names_map" {
