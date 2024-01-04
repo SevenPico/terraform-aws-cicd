@@ -52,7 +52,6 @@ variable "enable_ecs_standalone_task" {
 
 variable "s3_targets" {
   type = map(object({
-    file_type              = string
     source_s3_bucket_id    = string
     source_s3_object_key   = string
     target_s3_bucket_id    = string
