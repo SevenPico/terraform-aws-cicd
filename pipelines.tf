@@ -29,6 +29,7 @@ locals {
     { for k, v in var.s3_targets : "${module.context.id}/s3/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
     { for k, v in var.cloudformation_targets : "${module.context.id}/cloudformation/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
     { for k, v in var.ec2_targets : "${module.context.id}/ec2/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
+    { for k, v in var.lambda_targets : "${module.context.id}/lambda/${k}" => "${v.source_s3_bucket_id}/${v.source_s3_object_key}" },
   )
 
   ecs_target_version_ssm_parameter_names_map      = module.context.enabled ? { for k, v in var.ecs_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ecs/${k}"].name } : {}
@@ -37,6 +38,8 @@ locals {
   cf_target_version_ssm_parameter_names_map       = module.context.enabled ? { for k, v in var.cloudformation_targets : k => aws_ssm_parameter.target_source["${module.context.id}/cloudformation/${k}"].name } : {}
   ec2_target_version_ssm_parameter_names_map      = module.context.enabled ? { for k, v in var.ec2_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ec2/${k}"].name } : {}
   ec2_target_version_ssm_parameter_arns_map       = module.context.enabled ? { for k, v in var.ec2_targets : k => aws_ssm_parameter.target_source["${module.context.id}/ec2/${k}"].arn } : {}
+  lambda_target_version_ssm_parameter_names_map   = module.context.enabled ? { for k, v in var.lambda_targets : k => aws_ssm_parameter.target_source["${module.context.id}/lambda/${k}"].name } : {}
+
 }
 
 
@@ -162,6 +165,31 @@ module "ec2_pipeline" {
   cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id                     #each.value.source_s3_bucket_id
   source_s3_object_key           = "${module.context.id}/ec2/${each.key}.${each.value.file_type}" #each.value.source_s3_object_key
+}
+
+
+# ------------------------------------------------------------------------------
+# Lambda Target Pipelines
+# ------------------------------------------------------------------------------
+module "lambda_pipeline" {
+  source  = "./modules/lambda-pipeline"
+  context = module.context.self
+
+  for_each   = var.lambda_targets
+  attributes = ["ec2", each.key]
+
+  artifact_store_kms_key_arn       = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
+  artifact_store_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
+  cloudwatch_log_expiration_days   = var.cloudwatch_log_expiration_days
+  source_s3_bucket_id              = module.deployer_artifacts_bucket.bucket_id #each.value.source_s3_bucket_id
+  source_s3_object_key             = "${module.context.id}/lambda/${each.key}.zip" #each.value.source_s3_object_key
+  function_name                    = each.value.function_name
+  user_parameters                  = each.value.user_parameters
+  pre_deploy_enabled               = (each.value.pre_deploy != null)
+  pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
+  pre_deploy_policy_docs           = try(each.value.pre_deploy.policy_docs, [])
+  pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
+  build_image                      = var.build_image
 }
 
 

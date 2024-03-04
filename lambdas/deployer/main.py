@@ -26,7 +26,7 @@ def lambda_handler(event, context):
 
     print(f'Source Event: {e}')
 
-    if e['type'] in ['ecr', 's3', 'cloudformation', 'ec2']:
+    if e['type'] in ['ecr', 's3', 'cloudformation', 'ec2', 'lambda']:
         trigger_by_uri(e['uri'])
 
     if e['type'] in ['ssm']:
@@ -49,6 +49,8 @@ def trigger_by_name(name):
             trigger_cf_pipeline(target_name, source_uri)
         elif type == 'ec2':
             trigger_ec2_pipeline(target_name, source_uri)
+        elif type == 'lambda':
+            trigger_lambda_pipeline(target_name, source_uri)
         else:
             logging.warning(f"Unsupported event type '{type} for '{target_name}' {source_uri}")
 
@@ -134,6 +136,19 @@ def trigger_cf_pipeline(target_name, object_uri):
 
 def trigger_ec2_pipeline(target_name, object_uri):
     print(f"Triggering '{target_name}' ec2 pipeline with {object_uri}")
+
+    suffix = pathlib.Path(object_uri).suffix
+
+    s3 = session.client('s3')
+    s3.copy_object(
+        Bucket=config.deployer_artifacts_bucket_id,
+        Key=f'{target_name}{suffix}',
+        CopySource=object_uri,
+    )
+
+
+def trigger_lambda_pipeline(target_name, object_uri):
+    print(f"Triggering '{target_name}' Lambda Function pipeline with {object_uri}")
 
     suffix = pathlib.Path(object_uri).suffix
 

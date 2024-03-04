@@ -95,6 +95,26 @@ variable "cloudformation_targets" {
   default = {}
 }
 
+variable "lambda_targets" {
+  type = map(object({
+    source_s3_bucket_id  = string
+    source_s3_object_key = string
+    function_name        = string
+    user_parameters      = string
+    pre_deploy = object({
+      buildspec   = string
+      policy_docs = list(string)
+      env_vars = list(object({
+        name  = string
+        value = string
+        type  = string
+        }
+      ))
+    })
+  }))
+  default = {}
+}
+
 variable "ec2_targets" {
   type = map(object({
     source_s3_bucket_id  = string
