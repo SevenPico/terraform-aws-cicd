@@ -54,6 +54,7 @@ module "codepipeline_event" {
         [for p in module.ecs_task_pipeline : p.id],
         [for p in module.cf_pipeline : p.id],
         [for p in module.ec2_pipeline : p.id],
+        [for p in module.lambda_pipeline : p.id],
       )
     }
   })

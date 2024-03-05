@@ -176,7 +176,7 @@ module "lambda_pipeline" {
   context = module.context.self
 
   for_each   = var.lambda_targets
-  attributes = ["ec2", each.key]
+  attributes = ["lambda", each.key]
 
   artifact_store_kms_key_arn       = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
   artifact_store_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
