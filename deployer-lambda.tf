@@ -242,6 +242,12 @@ module "deployer_lambda_policy" {
       #          for target in values(var.ec2_targets) : "arn:aws:s3:::${target.source_s3_bucket_id}/*"
       #        ]
       #      )
+    },
+    "InvokeLambda" = {
+      effect    = "Allow"
+      actions   = ["lambda:InvokeFunction"]
+      resources = [
+      for p , v in var.lambda_targets : "arn:aws:lambda:${var.region}:${local.account_id}:function:${v.function_name}" ]
     }
   }
 }
