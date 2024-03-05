@@ -178,18 +178,15 @@ module "lambda_pipeline" {
   for_each   = var.lambda_targets
   attributes = ["lambda", each.key]
 
-  artifact_store_kms_key_arn       = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
-  artifact_store_s3_bucket_id      = module.deployer_artifacts_bucket.bucket_id
-  cloudwatch_log_expiration_days   = var.cloudwatch_log_expiration_days
-  source_s3_bucket_id              = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key             = "${module.context.id}/lambda/${each.key}.zip"
-  function_name                    = each.value.function_name
-  user_parameters                  = each.value.user_parameters
-  pre_deploy_enabled               = (each.value.pre_deploy != null)
-  pre_deploy_buildspec             = try(each.value.pre_deploy.buildspec, "deployspec.yml")
-  pre_deploy_policy_docs           = try(each.value.pre_deploy.policy_docs, [])
-  pre_deploy_environment_variables = try(each.value.pre_deploy.env_vars, [])
-  build_image                      = var.build_image
+  artifact_store_kms_key_arn     = "" # FIXME which IAM permissions required to use this? module.kms_key.key_arn
+  artifact_store_s3_bucket_id    = module.deployer_artifacts_bucket.bucket_id
+  build_environment_variables    = try(each.value.build.env_vars, [])
+  build_image                    = var.build_image
+  build_policy_docs              = try(each.value.build.policy_docs, [])
+  buildspec                      = try(each.value.build.buildspec, "deployspec.yml")
+  cloudwatch_log_expiration_days = var.cloudwatch_log_expiration_days
+  source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id #each.value.source_s3_bucket_id
+  source_s3_object_key           = "${module.context.id}/lambda-functions/${each.key}.zip"
 }
 
 
