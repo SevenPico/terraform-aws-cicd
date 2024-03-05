@@ -246,8 +246,7 @@ module "deployer_lambda_policy" {
     "InvokeLambda" = {
       effect    = "Allow"
       actions   = ["lambda:InvokeFunction"]
-      resources = [
-      for p , v in var.lambda_targets : "arn:aws:lambda:${var.region}:${local.account_id}:function:${v.function_name}" ]
+      resources = ["*"]
     }
   }
 }
