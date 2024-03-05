@@ -123,7 +123,8 @@ module "codepipeline_iam_policy" {
         "rds:*",
         "sqs:*",
         "ecs:*",
-        "iam:PassRole"
+        "iam:PassRole",
+        "lambda:*"
       ]
       resources  = ["*"]
       conditions = []

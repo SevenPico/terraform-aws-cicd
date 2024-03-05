@@ -243,10 +243,5 @@ module "deployer_lambda_policy" {
       #        ]
       #      )
     },
-    "InvokeLambda" = {
-      effect    = "Allow"
-      actions   = ["lambda:InvokeFunction"]
-      resources = ["*"]
-    }
   }
 }
