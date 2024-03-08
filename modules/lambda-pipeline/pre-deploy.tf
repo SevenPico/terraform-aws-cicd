@@ -1,62 +1,12 @@
-## ----------------------------------------------------------------------------
-##  Copyright 2023 SevenPico, Inc.
-##
-##  Licensed under the Apache License, Version 2.0 (the "License");
-##  you may not use this file except in compliance with the License.
-##  You may obtain a copy of the License at
-##
-##     http://www.apache.org/licenses/LICENSE-2.0
-##
-##  Unless required by applicable law or agreed to in writing, software
-##  distributed under the License is distributed on an "AS IS" BASIS,
-##  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-##  See the License for the specific language governing permissions and
-##  limitations under the License.
-## ----------------------------------------------------------------------------
-
-## ----------------------------------------------------------------------------
-##  ./modules/ec2-pipeline/pre-deploy.tf
-##  This file contains code written by SevenPico, Inc.
-## ----------------------------------------------------------------------------
-
-# environment_variable {
-#   name  = "AWS_REGION"
-#   value = join("", data.aws_region.current[*].name)
-# }
-# environment_variable {
-#   name  = "S3_TARGET_BUCKET"
-#   value = "s3://${module.site.s3_bucket}"
-# }
-
-# environment_variable {
-#   name  = "AWS_SECRETS_REGION"
-#   value = join("", data.aws_region.current[*].name)
-# }
-# environment_variable {
-#   name  = "S3_SECRETS_BUCKET"
-#   value = "s3://${var.config_bucket_name}"
-# }
-
-
-# -----------------------------------------------------------------------------
-# Codebuild Context
-# -----------------------------------------------------------------------------
-# module "pre_deploy_context" {
-#   source     = "SevenPico/context/null"
-#   version    = "2.0.0"
-#   context    = module.context.self
-# }
-
-
 # -----------------------------------------------------------------------------
 # Codebuild Project
 # -----------------------------------------------------------------------------
-module "codebuild" {
+module "pre_deploy_codebuild" {
   source     = "registry.terraform.io/SevenPico/codebuild/aws"
   version    = "2.0.2"
   context    = module.context.self
-  enabled    = module.context.enabled
-  attributes = ["build"]
+  enabled    = module.context.enabled && var.pre_deploy_enabled
+  attributes = ["pre-deploy"]
 
   access_log_bucket_name                = ""
   artifact_location                     = ""
@@ -69,16 +19,16 @@ module "codebuild" {
   build_image_pull_credentials_type     = "CODEBUILD"
   build_timeout                         = 10
   build_type                            = "LINUX_CONTAINER"
-  buildspec                             = var.buildspec
+  buildspec                             = var.pre_deploy_buildspec
   cache_bucket_suffix_enabled           = true
   cache_expiration_days                 = 7
   cache_type                            = "NO_CACHE"
-  codebuild_policy_documents            = var.build_policy_docs
+  codebuild_policy_documents            = var.pre_deploy_policy_docs
   concurrent_build_limit                = null
   description                           = "Allows for changes to artifact files before deployment to the target bucket"
   encryption_enabled                    = false
   encryption_key                        = null
-  environment_variables                 = var.build_environment_variables
+  environment_variables                 = var.pre_deploy_environment_variables
   fetch_git_submodules                  = false
   file_system_locations                 = {}
   git_clone_depth                       = null
@@ -109,14 +59,3 @@ module "codebuild" {
   versioning_enabled                    = true
   vpc_config                            = {}
 }
-
-
-# -----------------------------------------------------------------------------
-# Codebuild Log Group
-# -----------------------------------------------------------------------------
-# resource "aws_cloudwatch_log_group" "codebuild" {
-#   count             = module.pre_deploy_context.enabled ? 1 : 0
-#   name              = "/aws/codebuild/${module.pre_deploy_context.id}"
-#   retention_in_days = var.cloudwatch_log_expiration_days
-#   tags              = module.pre_deploy_context.tags
-# }
