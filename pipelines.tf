@@ -186,7 +186,7 @@ module "lambda_pipeline" {
   buildspec                      = try(each.value.build.buildspec, "deployspec.yml")
   cloudwatch_log_expiration_days = 90
   source_s3_bucket_id            = module.deployer_artifacts_bucket.bucket_id
-  source_s3_object_key           = "${module.context.id}/lambda/${each.key}.zip}"
+  source_s3_object_key           = "${module.context.id}/lambda/${each.key}.zip"
 
 }
 
